@@ -1,18 +1,16 @@
-'use client';
-
 import { Navbar } from "@/components/layout/Navbar";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { ProblemStatement } from "@/components/landing/ProblemStatement";
 import { FeaturesSection } from "@/components/landing/FeaturesSection";
 import { CircularEconomySection } from "@/components/landing/CircularEconomySection";
 import { Footer } from "@/components/landing/Footer";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const handleGetStarted = () => {
-    router.push("/dashboard");
+    navigate("/dashboard");
   };
 
   return (
