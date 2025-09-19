@@ -1,40 +1,37 @@
-// src/utils/emissionFactorStore.js
+// Emission factors for LCA calculations
+const emissionFactors = {
+    // Carbon footprint factors (kg CO2-eq per unit)
+    EmissionFactorDieselKilogramCarbonDioxideEquivalentPerLiter: 2.68,
+    EmissionFactorElectricityKilogramCarbonDioxideEquivalentPerKilowattHour: 0.82,
+    EmissionFactorReagentKilogramCarbonDioxideEquivalentPerKilogram: 1.2,
+    EmissionFactorTransportKilogramCarbonDioxideEquivalentPerTonneKilometer: 0.062,
 
-const emissionFactorStore = {
-  // 🔹 Energy-related emission factors
-  EmissionFactorDieselKilogramCarbonDioxideEquivalentPerLiter: 2.68, // kg CO2e per liter diesel
-  EmissionFactorElectricityKilogramCarbonDioxideEquivalentPerKilowattHour: 0.45, // kg CO2e per kWh (grid average)
-  EmissionFactorElectricityEnergyMegajoulePerKilowattHour: 3.6, // MJ per kWh
-  EmissionFactorDieselEnergyMegajoulePerLiter: 38.6, // MJ per liter diesel
+    // Energy footprint factors (MJ per unit)
+    EmissionFactorElectricityEnergyMegajoulePerKilowattHour: 3.6,
+    EmissionFactorDieselEnergyMegajoulePerLiter: 38.6,
+    EnergyFactorCokeMegajoulePerKilogram: 28.2,
 
-  // 🔹 Material-related emission factors
-  EmissionFactorReagentKilogramCarbonDioxideEquivalentPerKilogram: 1.5, // kg CO2e per kg reagent (placeholder)
-  EmissionFactorFluxKilogramCarbonDioxideEquivalentPerKilogram: 0.8, // example for smelting fluxes
-  EmissionFactorAncillaryMaterialKilogramCarbonDioxideEquivalentPerKilogram: 2.0, // for fabrication
+    // Coke emission factors
+    EmissionFactorCokeKilogramCarbonDioxideEquivalentPerKilogram: 3.2,
 
-  // 🔹 Transport-related emission factors
-  EmissionFactorTransportKilogramCarbonDioxideEquivalentPerTonneKilometer: 0.1, // kg CO2e per t·km
+    // Air pollutant emission factors (kg per unit)
+    // Sulfur Dioxide (SO2)
+    PollutantEmissionFactorDieselSulfurDioxideKilogramsPerLiter: 0.0054,
+    PollutantEmissionFactorElectricitySulfurDioxideKilogramsPerKilowattHour: 0.0012,
+    PollutantEmissionFactorReagentSulfurDioxideKilogramsPerKilogram: 0.008,
+    PollutantEmissionFactorTransportSulfurDioxideKilogramsPerTonneKilometer: 0.00015,
 
-  // 🔹 Air pollutant emission factors (example placeholder values)
-  PollutantEmissionFactorDieselSulfurDioxideKilogramsPerLiter: 0.002,
-  PollutantEmissionFactorDieselNitrogenOxidesKilogramsPerLiter: 0.004,
-  PollutantEmissionFactorDieselParticulateMatterKilogramsPerLiter: 0.0005,
+    // Nitrogen Oxides (NOx)
+    PollutantEmissionFactorDieselNitrogenOxidesKilogramsPerLiter: 0.0312,
+    PollutantEmissionFactorElectricityNitrogenOxidesKilogramsPerKilowattHour: 0.0008,
+    PollutantEmissionFactorReagentNitrogenOxidesKilogramsPerKilogram: 0.005,
+    PollutantEmissionFactorTransportNitrogenOxidesKilogramsPerTonneKilometer: 0.00089,
 
-  PollutantEmissionFactorElectricitySulfurDioxideKilogramsPerKilowattHour: 0.001,
-  PollutantEmissionFactorElectricityNitrogenOxidesKilogramsPerKilowattHour: 0.002,
-  PollutantEmissionFactorElectricityParticulateMatterKilogramsPerKilowattHour: 0.0003,
-
-  // 🔹 Pollutant factors for reagents (placeholders)
-  PollutantEmissionFactorReagentSulfurDioxideKilogramsPerKilogram: 0.0001,
-  PollutantEmissionFactorReagentNitrogenOxidesKilogramsPerKilogram: 0.0002,
-  PollutantEmissionFactorReagentParticulateMatterKilogramsPerKilogram: 0.00005,
-
-  // 🔹 Pollutant factors for transport (placeholders)
-  PollutantEmissionFactorTransportSulfurDioxideKilogramsPerTonneKilometer: 0.0001,
-  PollutantEmissionFactorTransportNitrogenOxidesKilogramsPerTonneKilometer: 0.0005,
-  PollutantEmissionFactorTransportParticulateMatterKilogramsPerTonneKilometer: 0.00005,
-
-  // ... add more if needed for other stages
+    // Particulate Matter (PM)
+    PollutantEmissionFactorDieselParticulateMatterKilogramsPerLiter: 0.0024,
+    PollutantEmissionFactorElectricityParticulateMatterKilogramsPerKilowattHour: 0.0003,
+    PollutantEmissionFactorReagentParticulateMatterKilogramsPerKilogram: 0.002,
+    PollutantEmissionFactorTransportParticulateMatterKilogramsPerTonneKilometer: 0.00012
 };
 
-module.exports = emissionFactorStore;
+module.exports = emissionFactors;
