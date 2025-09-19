@@ -22,6 +22,7 @@ app.use("/api/smelting", require("./routes/smeltingRoutes"));
 app.use("/api/fabrication", require("./routes/fabricationRoutes"));
 app.use("/api/use-phase", require("./routes/usePhaseRoutes"));
 app.use("/api/end-of-life", require("./routes/endOfLifeRoutes"));
+app.use('/api/comparison', require('./routes/comparisonRoutes'));
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
