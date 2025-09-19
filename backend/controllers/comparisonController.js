@@ -79,4 +79,32 @@ const handleComparisonRequest = async (req, res) => {
     }
 };
 
-module.exports = { handleComparisonRequest };
+// New: GET handler moved to controller
+const getComparison = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+
+    // Try to find a linear analysis result first
+    const linear = await LinearAnalysis.findOne({ projectId }).lean();
+    if (linear) {
+      return res.status(200).json(linear);
+    }
+
+    // Otherwise try to find a circular analysis result
+    const circular = await CircularAnalysis.findOne({ projectId }).lean();
+    if (circular) {
+      return res.status(200).json(circular);
+    }
+
+    // Not found
+    return res.status(404).json({ message: 'No comparison analysis found for this project.' });
+  } catch (error) {
+    console.error('Error fetching comparison result:', error);
+    return res.status(500).json({ message: 'Server error fetching comparison result.' });
+  }
+};
+
+module.exports = {
+  handleComparisonRequest,
+  getComparison
+};

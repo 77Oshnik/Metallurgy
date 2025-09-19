@@ -24,7 +24,8 @@ const getLinearAnalysis = async (aggregatedData) => {
         1. Predict the inputs for Stage 6 (End-of-Life) based on this data. The fields to predict are: CollectionRatePercent, RecyclingEfficiencyPercent, RecyclingEnergyKilowattHoursPerTonneRecycled, TransportDistanceKilometersToRecycler, DowncyclingFractionPercent, LandfillSharePercent.
         2. Predict the outputs for Stage 6. The fields to predict are: EndOfLifeRecyclingRatePercent, RecycledMassTonnesPerFunctionalUnit, LandfilledMassTonnesPerFunctionalUnit, CarbonFootprintKilogramsCarbonDioxideEquivalentPerFunctionalUnitForEndOfLife, ScrapUtilizationFraction.
         3. Provide 3-5 bullet points describing how implementing this predicted end-of-life stage improves the process's sustainability compared to just the first 5 stages.
-        
+        4. Provide proper units for all predicted numerical values along with the values and give them together in same line the JSON response.
+
         Return a single JSON object with three keys: "predictedInputs", "predictedOutputs", and "improvements" (which should be an array of strings).
     `;
     return await callGemini(prompt);

@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Download, Recycle, Zap, Droplets, TreePine, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from '@/components/ui/use-toast';
+import CircularComparison from '@/components/CircularComparison';
 
 interface Project {
   _id: string;
@@ -32,6 +33,7 @@ export default function ResultsPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [results, setResults] = useState<StageResult[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showComparison, setShowComparison] = useState(false);
 
   const stageEndpoints = [
     { name: 'Mining', endpoint: 'mining' },
@@ -315,6 +317,26 @@ export default function ResultsPage() {
               </div>
             </CardContent>
           </Card>
+        )}
+
+        {/* Comparison Toggle Button (always visible, no hover) */}
+        <div className="mb-8">
+          <div className="max-w-3xl mx-auto px-4">
+            <Button
+              onClick={() => setShowComparison(s => !s)}
+              className="w-full py-3 "
+              style={{ opacity: 1, visibility: 'visible', transition: 'none' }}
+            >
+              {showComparison ? 'Hide Circular Comparison' : 'Show Circular Comparison'}
+            </Button>
+          </div>
+        </div>
+        
+        {/* Render CircularComparison when toggled */}
+        {showComparison && (
+          <div className="mb-8 max-w-3xl mx-auto">
+            <CircularComparison ProjectIdentifier={projectId} />
+          </div>
         )}
 
         {/* Detailed Results */}
