@@ -1351,17 +1351,17 @@ export default function ResultsPage() {
                     <div className="text-2xl font-bold mb-1">
                       {Object.values(circularityIndicators).length > 0
                         ? (
-                            Object.values(circularityIndicators).reduce(
-                              (a: number, b: number) => a + b,
-                              0
-                            ) / Object.values(circularityIndicators).length
+                            Object.values(circularityIndicators)
+                              .map((v) => Number(v))
+                              .reduce((a, b) => a + b, 0) /
+                            Object.values(circularityIndicators).length
                           ).toFixed(1)
                         : "0.0"}
                       %
-                    </div>
                     <div className="text-sm opacity-90">
                       Overall Circularity Score
                     </div>
+                  </div>
                   </div>
                 </CardContent>
               </Card>

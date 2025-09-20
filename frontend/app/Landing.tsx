@@ -4,19 +4,19 @@ import { ProblemStatement } from "@/components/landing/ProblemStatement";
 import { FeaturesSection } from "@/components/landing/FeaturesSection";
 import { CircularEconomySection } from "@/components/landing/CircularEconomySection";
 import { Footer } from "@/components/landing/Footer";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 const Landing = () => {
-  const navigate = useNavigate();
-
+  const router = useRouter();
+  
   const handleGetStarted = () => {
-    navigate("/dashboard");
+    router.push("/dashboard");
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar onGetStarted={handleGetStarted} />
-      <HeroSection onGetStarted={handleGetStarted} />
+      <Navbar />
+      <HeroSection />
       <ProblemStatement />
       <FeaturesSection />
       <CircularEconomySection />

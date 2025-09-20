@@ -41,10 +41,9 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         day_hidden: "invisible",
         ...classNames,
       }}
-      components={{
-        IconLeft: ({ ..._props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ..._props }) => <ChevronRight className="h-4 w-4" />,
-      }}
+      // The 'iconLeft' and 'iconRight' props are not valid for react-day-picker v8+.
+      // react-day-picker v8+ does not support the 'components' prop for navigation icons.
+      // Navigation icons are now controlled by CSS only.
       {...props}
     />
   );
