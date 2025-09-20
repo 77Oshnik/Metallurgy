@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Plus, ArrowRight, Recycle, TrendingUp, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Plus, ArrowRight, Recycle, TrendingUp, BarChart3, Zap } from 'lucide-react';
 
 interface Project {
   _id: string;
@@ -26,11 +26,17 @@ export default function ProjectsPage() {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch('/api/projects');
+      // Use public env var so you can configure backend base URL.
+      // If NEXT_PUBLIC_BACKEND_URL is not set, it will use relative path (works if Next proxies the API).
+      const base = process.env.NEXT_PUBLIC_BACKEND_URL ?? '';
+      const response = await fetch(`${base}/api/projects/`);
       if (response.ok) {
         const data = await response.json();
         console.log('Fetched projects:', data); // Debug log
-        setProjects(data.projects || []);
+
+        // Accept both shapes: an array or { projects: [...] }
+        const projectsList = Array.isArray(data) ? data : (data.projects ?? []);
+        setProjects(projectsList);
       } else {
         console.error('Failed to fetch projects:', response.status, response.statusText);
         const errorData = await response.json().catch(() => ({}));
@@ -275,6 +281,63 @@ export default function ProjectsPage() {
                 </Card>
               </Link>
             </div>
+
+            {/* Check Out Features */}
+            <section className="mt-10">
+              <div className="relative rounded-xl p-6 overflow-hidden bg-gradient-to-r from-slate-900/80 via-indigo-900/40 to-slate-900/50">
+                <div className="absolute -left-32 -top-24 w-72 h-72 bg-gradient-to-tr from-blue-400/20 to-purple-500/10 rounded-full blur-3xl opacity-60 pointer-events-none"></div>
+                <div className="flex items-center justify-between mb-6 relative z-10">
+                  <div>
+                    <h2 className="text-2xl font-bold text-white">Check Out Features</h2>
+                    <p className="text-sm text-slate-200/80">Explore the tools to simulate scenarios, compare workflows and visualize results.</p>
+                  </div>
+                  <Link href={`projects/${projects[0]?._id}/what-if`} className="relative z-10">
+                    <Button className="bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-green-500 hover:to-blue-600">
+                      Try the What‑If Tool
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 relative z-10">
+                  <div className="p-4 rounded-lg bg-white/6 border border-white/6 backdrop-blur-sm hover:scale-105 transition-transform">
+                    <div className="flex items-start space-x-3">
+                      <div className="p-3 rounded-md bg-gradient-to-br from-blue-600 to-indigo-500 text-white">
+                        <BarChart3 className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-white">Scenario Analytics</h3>
+                        <p className="text-xs text-slate-200/70">Run what‑if scenarios to compare environmental impacts across alternatives.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-lg bg-white/6 border border-white/6 backdrop-blur-sm hover:scale-105 transition-transform">
+                    <div className="flex items-start space-x-3">
+                      <div className="p-3 rounded-md bg-gradient-to-br from-green-500 to-teal-400 text-white">
+                        <TrendingUp className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-white">Performance Insights</h3>
+                        <p className="text-xs text-slate-200/70">Visualize performance metrics and identify hotspots in your process chain.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-lg bg-white/6 border border-white/6 backdrop-blur-sm hover:scale-105 transition-transform">
+                    <div className="flex items-start space-x-3">
+                      <div className="p-3 rounded-md bg-gradient-to-br from-pink-500 to-purple-500 text-white">
+                        <Zap className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-white">Fast Simulation</h3>
+                        <p className="text-xs text-slate-200/70">Run quick predictive simulations and get instant feedback on alternatives.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
           </>
         )}
       </div>

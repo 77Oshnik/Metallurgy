@@ -11,14 +11,14 @@ type Props = {
 
 export default function Field({ name, label, value, type = 'number', onChange }: Props) {
   return (
-    <div style={{ marginBottom: 8 }}>
-      <label style={{ display: 'block', fontSize: 14, marginBottom: 4 }}>{label || name}</label>
+    <div className="mb-3">
+      <label className="block text-sm font-medium text-white mb-1">{label || name}</label>
       <input
         name={name}
         value={value as any}
         type={type}
         onChange={(e) => onChange(name, type === 'number' ? (e.target.value === '' ? '' : Number(e.target.value)) : e.target.value)}
-        style={{ padding: 8, width: '100%', boxSizing: 'border-box' }}
+        className="w-full rounded-md border border-slate-200 px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
     </div>
   );
