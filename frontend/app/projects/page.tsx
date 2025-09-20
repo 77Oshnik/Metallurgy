@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Plus, ArrowRight, Recycle, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Plus, ArrowRight, Recycle, TrendingUp, BarChart3 } from 'lucide-react';
 
 interface Project {
   _id: string;
@@ -29,7 +29,12 @@ export default function ProjectsPage() {
       const response = await fetch('/api/projects');
       if (response.ok) {
         const data = await response.json();
+        console.log('Fetched projects:', data); // Debug log
         setProjects(data.projects || []);
+      } else {
+        console.error('Failed to fetch projects:', response.status, response.statusText);
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Error details:', errorData);
       }
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -111,47 +116,166 @@ export default function ProjectsPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.map((project) => (
-              <Card key={project._id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center space-x-2">
-                      <span className="text-2xl">{getMetalIcon(project.MetalType)}</span>
-                      <span className="truncate">{project.ProjectName}</span>
-                    </CardTitle>
-                    <Badge className={getProcessingModeColor(project.ProcessingMode)}>
-                      {project.ProcessingMode}
-                    </Badge>
-                  </div>
-                  <CardDescription>
-                    {project.MetalType} • {project.FunctionalUnitMassTonnes} tonnes
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="text-sm text-gray-500">
-                      Created: {new Date(project.CreatedAtUtc).toLocaleDateString()}
+          <>
+            {/* Projects Summary */}
+            <div className="mb-8">
+              <div className="grid md:grid-cols-3 gap-6">
+                <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-blue-100 text-sm">Total Projects</p>
+                        <p className="text-3xl font-bold">{projects.length}</p>
+                      </div>
+                      <div className="text-4xl opacity-80">📊</div>
                     </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-green-100 text-sm">Circular Projects</p>
+                        <p className="text-3xl font-bold">
+                          {projects.filter(p => p.ProcessingMode === 'Circular').length}
+                        </p>
+                      </div>
+                      <div className="text-4xl opacity-80">♻️</div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-purple-100 text-sm">Metal Types</p>
+                        <p className="text-3xl font-bold">
+                          {new Set(projects.map(p => p.MetalType)).size}
+                        </p>
+                      </div>
+                      <div className="text-4xl opacity-80">⚙️</div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            {/* Projects Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {projects.map((project) => (
+                <Link key={project._id} href={`/projects/${project._id}/results`}>
+                  <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group relative overflow-hidden">
+                    {/* Background decoration */}
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full -mr-10 -mt-10 opacity-50 group-hover:opacity-70 transition-opacity"></div>
                     
-                    <div className="flex space-x-2">
-                      <Link href={`/projects/${project._id}/workflow`} className="flex-1">
-                        <Button className="w-full">
-                          <Recycle className="h-4 w-4 mr-2" />
-                          Start Analysis
-                        </Button>
-                      </Link>
-                      <Link href={`/projects/${project._id}/results`}>
-                        <Button variant="outline">
-                          <ArrowRight className="h-4 w-4" />
-                        </Button>
-                      </Link>
+                    <CardHeader className="relative z-10">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="flex items-center space-x-3">
+                          <div className="text-3xl p-2 bg-gray-100 rounded-lg group-hover:bg-gray-200 transition-colors">
+                            {getMetalIcon(project.MetalType)}
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+                              {project.ProjectName}
+                            </div>
+                            <div className="text-sm text-gray-500 mt-1">
+                              {project.MetalType}
+                            </div>
+                          </div>
+                        </CardTitle>
+                        <Badge className={`${getProcessingModeColor(project.ProcessingMode)} group-hover:scale-105 transition-transform`}>
+                          {project.ProcessingMode}
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    
+                    <CardContent className="relative z-10">
+                      <div className="space-y-4">
+                        {/* Project Details */}
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div className="bg-gray-50 p-3 rounded-lg">
+                            <div className="text-gray-500 text-xs">Functional Unit</div>
+                            <div className="font-semibold text-gray-900">
+                              {project.FunctionalUnitMassTonnes} tonnes
+                            </div>
+                          </div>
+                          <div className="bg-gray-50 p-3 rounded-lg">
+                            <div className="text-gray-500 text-xs">Created</div>
+                            <div className="font-semibold text-gray-900">
+                              {new Date(project.CreatedAtUtc).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Action Indicators */}
+                        <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                          <div className="flex items-center space-x-2 text-sm text-gray-600">
+                            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                            <span>Click to view results</span>
+                          </div>
+                          <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+                        </div>
+                        
+                        {/* Quick Actions */}
+                        <div className="flex space-x-2 pt-2">
+                          <Link 
+                            href={`/projects/${project._id}/workflow`} 
+                            className="flex-1"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="w-full text-xs hover:bg-blue-50 hover:border-blue-300"
+                            >
+                              <Recycle className="h-3 w-3 mr-1" />
+                              Edit Workflow
+                            </Button>
+                          </Link>
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="px-3 hover:bg-green-50 hover:border-green-300"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              window.location.href = `/projects/${project._id}/results`;
+                            }}
+                          >
+                            <TrendingUp className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                    
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+            
+            {/* Add New Project Card */}
+            <div className="mt-8">
+              <Link href="/projects/new">
+                <Card className="hover:shadow-lg transition-all duration-300 cursor-pointer border-2 border-dashed border-gray-300 hover:border-blue-400 bg-gray-50 hover:bg-blue-50">
+                  <CardContent className="p-8">
+                    <div className="text-center">
+                      <div className="mx-auto h-16 w-16 text-gray-400 mb-4 flex items-center justify-center bg-white rounded-full">
+                        <Plus className="h-8 w-8" />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Create New Project</h3>
+                      <p className="text-gray-500">
+                        Start a new LCA assessment for your metal production process
+                      </p>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            </div>
+          </>
         )}
       </div>
     </div>

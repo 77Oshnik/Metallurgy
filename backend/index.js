@@ -14,6 +14,15 @@ connectDB();
 
 const PORT = process.env.PORT || 5000;
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'LCA Platform API is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Define Routes
 app.use("/api/projects", require("./routes/projectRoutes"));
 app.use("/api/mining", require("./routes/miningRoutes"));

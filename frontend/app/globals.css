@@ -121,3 +121,181 @@
   }
 }
 
+@layer utilities {
+  /* Hero Section Animations */
+  .fade-in {
+    animation: fadeInGlitch 0.8s ease-out forwards;
+  }
+
+  .fade-in-subtitle {
+    animation: fadeInSubtle 1.2s ease-out forwards;
+  }
+
+  /* Custom Gradients */
+  .bg-gradient-hero {
+    background: linear-gradient(135deg, #00ff41 0%, #00cc33 50%, #009926 100%);
+  }
+
+  .bg-gradient-card {
+    background: linear-gradient(
+      145deg,
+      rgba(0, 255, 65, 0.05) 0%,
+      rgba(0, 0, 0, 0.8) 100%
+    );
+  }
+
+  .bg-gradient-accent {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 255, 65, 0.1) 0%,
+      rgba(0, 0, 0, 0.95) 100%
+    );
+  }
+
+  /* Tech-inspired shadows */
+  .shadow-glow {
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3), 0 0 40px rgba(0, 255, 65, 0.1);
+  }
+
+  .shadow-soft {
+    box-shadow: 0 4px 20px rgba(0, 255, 65, 0.1);
+  }
+
+  .shadow-medium {
+    box-shadow: 0 8px 30px rgba(0, 255, 65, 0.15);
+  }
+
+  /* Scanning line effect */
+  .scan-line {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scan-line::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00ff41, transparent);
+    animation: scan 3s linear infinite;
+  }
+
+  /* Glitch text effect */
+  .text-glitch {
+    position: relative;
+  }
+
+  .text-glitch::before,
+  .text-glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .text-glitch::before {
+    animation: glitch-1 0.5s infinite;
+    color: #00ff41;
+    z-index: -1;
+  }
+
+  .text-glitch::after {
+    animation: glitch-2 0.5s infinite;
+    color: #ff0040;
+    z-index: -2;
+  }
+
+  /* Matrix-style background */
+  .matrix-bg {
+    background-image: radial-gradient(
+        circle at 25% 25%,
+        rgba(0, 255, 65, 0.1) 0%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 75% 75%,
+        rgba(0, 255, 65, 0.05) 0%,
+        transparent 50%
+      );
+  }
+}
+
+@keyframes fadeInGlitch {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    filter: blur(2px);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(-2px) scale(1.02);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+@keyframes fadeInSubtle {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scan {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes glitch-1 {
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(-2px, -2px);
+  }
+  60% {
+    transform: translate(2px, 2px);
+  }
+  80% {
+    transform: translate(2px, -2px);
+  }
+}
+
+@keyframes glitch-2 {
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(2px, -2px);
+  }
+  40% {
+    transform: translate(2px, 2px);
+  }
+  60% {
+    transform: translate(-2px, -2px);
+  }
+  80% {
+    transform: translate(-2px, 2px);
+  }
+}

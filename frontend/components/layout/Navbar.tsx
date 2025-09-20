@@ -13,46 +13,44 @@ export const Navbar = ({ onGetStarted }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="relative z-50 bg-card/80 backdrop-blur-md border-b border-border/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="absolute top-0 left-0 w-full z-50 bg-transparent backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <h1 className="text-xl font-heading font-bold bg-gradient-hero bg-clip-text text-transparent">
-                Metallurgy LCA Tool
-              </h1>
-            </div>
+            <h1 className="text-xl font-bold tracking-wide text-green-500 hover:text-green-400 transition-colors cursor-pointer">
+              Metallurgy <span className="text-white">LCA Tool</span>
+            </h1>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
-              <a href="#features" className="text-foreground hover:text-primary transition-colors">
-                Features
-              </a>
-              <a href="#about" className="text-foreground hover:text-primary transition-colors">
-                About
-              </a>
-              <a href="#contact" className="text-foreground hover:text-primary transition-colors">
-                Contact
-              </a>
-            </div>
+          <div className="hidden md:flex items-center space-x-10">
+            <a href="#features" className="text-white/90 hover:text-green-400 transition-colors text-sm font-medium">
+              Features
+            </a>
+            <a href="#about" className="text-white/90 hover:text-green-400 transition-colors text-sm font-medium">
+              About
+            </a>
+            <a href="#contact" className="text-white/90 hover:text-green-400 transition-colors text-sm font-medium">
+              Contact
+            </a>
           </div>
 
-          {/* Theme Toggle & CTA Button */}
+          {/* Actions */}
           <div className="hidden md:flex items-center gap-4">
-            <ThemeToggle />
-            <Button variant="default" onClick={onGetStarted} className="shadow-soft bg-gradient-hero hover:shadow-glow">
+            <Button
+              onClick={onGetStarted}
+              className="shadow-soft bg-green-600 hover:bg-green-500 hover:shadow-glow text-white px-5 py-2 rounded-xl transition-all"
+            >
               Get Started
             </Button>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-foreground hover:text-primary transition-colors"
+              className="text-white hover:text-green-400 transition-colors"
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -61,40 +59,38 @@ export const Navbar = ({ onGetStarted }: NavbarProps) => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-card rounded-lg mt-2 shadow-medium">
+          <div className="md:hidden mt-2">
+            <div className="px-4 py-4 space-y-4 bg-black/70 backdrop-blur-lg rounded-lg shadow-lg">
               <a
                 href="#features"
-                className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
+                className="block text-white/90 hover:text-green-400 transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Features
               </a>
               <a
                 href="#about"
-                className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
+                className="block text-white/90 hover:text-green-400 transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 About
               </a>
               <a
                 href="#contact"
-                className="block px-3 py-2 text-foreground hover:text-primary transition-colors"
+                className="block text-white/90 hover:text-green-400 transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Contact
               </a>
-              <div className="pt-4 pb-2 space-y-2">
-                <div className="flex justify-center">
-                  <ThemeToggle />
-                </div>
-                <Button 
-                  variant="default" 
+              <div className="pt-2 flex flex-col gap-3">
+                <ThemeToggle />
+                <Button
+                  variant="default"
                   onClick={() => {
                     onGetStarted?.();
                     setIsMenuOpen(false);
                   }}
-                  className="w-full shadow-soft bg-gradient-hero hover:shadow-glow"
+                  className="w-full shadow-soft bg-green-600 hover:bg-green-500 hover:shadow-glow text-white rounded-xl"
                 >
                   Get Started
                 </Button>

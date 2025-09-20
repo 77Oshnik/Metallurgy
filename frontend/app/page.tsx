@@ -18,7 +18,7 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar onGetStarted={handleGetStarted} />
-      <HeroSection onGetStarted={handleGetStarted} />
+      <HeroSection />
       <ProblemStatement />
       <FeaturesSection />
       <CircularEconomySection />

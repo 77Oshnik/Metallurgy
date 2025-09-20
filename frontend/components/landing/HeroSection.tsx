@@ -1,89 +1,244 @@
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
-import heroImage from "@/assets/hero-metallurgy.jpg";
+'use client';
 
-interface HeroSectionProps {
-  onGetStarted?: () => void;
-}
+import { Canvas, extend, useFrame, useThree } from '@react-three/fiber';
+import { useAspect, useTexture } from '@react-three/drei';
+import { useMemo, useRef, useState, useEffect } from 'react';
+import * as THREE from 'three/webgpu';
+import { bloom } from 'three/examples/jsm/tsl/display/BloomNode.js';
+import { Mesh } from 'three';
 
-export const HeroSection = ({ onGetStarted }: HeroSectionProps) => {
+import {
+  abs,
+  blendScreen,
+  float,
+  mod,
+  mx_cell_noise_float,
+  oneMinus,
+  smoothstep,
+  texture,
+  uniform,
+  uv,
+  vec2,
+  vec3,
+  pass,
+  mix,
+  add
+} from 'three/tsl';
+
+const TEXTUREMAP = { src: 'https://i.postimg.cc/XYwvXN8D/img-4.png' };
+const DEPTHMAP = { src: 'https://i.postimg.cc/2SHKQh2q/raw-4.webp' };
+
+extend(THREE as any);
+
+// Post Processing component
+const PostProcessing = ({
+  strength = 1,
+  threshold = 1,
+  fullScreenEffect = true,
+}: {
+  strength?: number;
+  threshold?: number;
+  fullScreenEffect?: boolean;
+}) => {
+  const { gl, scene, camera } = useThree();
+  const progressRef = useRef({ value: 0 });
+
+  const render = useMemo(() => {
+    const postProcessing = new THREE.PostProcessing(gl as any);
+    const scenePass = pass(scene, camera);
+    const scenePassColor = scenePass.getTextureNode('output');
+    const bloomPass = bloom(scenePassColor, strength, 0.5, threshold);
+
+    // Create the scanning effect uniform
+    const uScanProgress = uniform(0);
+    progressRef.current = uScanProgress;
+
+    // Remove the scanning effect overlay
+    const scanPos = float(uScanProgress.value);
+    const uvY = uv().y;
+    const scanWidth = float(0.05);
+    const scanLine = smoothstep(0, scanWidth, abs(uvY.sub(scanPos)));
+    // Removed the green overlay: const redOverlay = vec3(0, 1, 0).mul(oneMinus(scanLine)).mul(0.4);
+
+    // Use original scene without the green overlay
+    const withScanEffect = scenePassColor;
+
+    // Add bloom effect after scan effect
+    const final = withScanEffect.add(bloomPass);
+
+    postProcessing.outputNode = final;
+
+    return postProcessing;
+  }, [camera, gl, scene, strength, threshold, fullScreenEffect]);
+
+  useFrame(({ clock }) => {
+    // Animate the scan line from top to bottom
+    progressRef.current.value = (Math.sin(clock.getElapsedTime() * 0.5) * 0.5 + 0.5);
+    render.renderAsync();
+  }, 1);
+
+  return null;
+};
+
+const WIDTH = 300;
+const HEIGHT = 300;
+
+const Scene = () => {
+  const [rawMap, depthMap] = useTexture([TEXTUREMAP.src, DEPTHMAP.src]);
+
+  const meshRef = useRef<Mesh>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    // Показываем изображение после загрузки текстур
+    if (rawMap && depthMap) {
+      setVisible(true);
+    }
+  }, [rawMap, depthMap]);
+
+  const { material, uniforms } = useMemo(() => {
+    const uPointer = uniform(new THREE.Vector2(0));
+    const uProgress = uniform(0);
+
+    const strength = 0.01;
+
+    const tDepthMap = texture(depthMap);
+
+    const tMap = texture(
+      rawMap,
+      uv().add(tDepthMap.r.mul(uPointer).mul(strength))
+    );
+
+    const aspect = float(WIDTH).div(HEIGHT);
+    const tUv = vec2(uv().x.mul(aspect), uv().y);
+
+    const tiling = vec2(120.0);
+    const tiledUv = mod(tUv.mul(tiling), 2.0).sub(1.0);
+
+    const brightness = mx_cell_noise_float(tUv.mul(tiling).div(1));
+
+    const dist = float(tiledUv.length());
+    const dot = float(smoothstep(0.5, 0.49, dist)).mul(brightness);
+
+    const depth = tDepthMap;
+
+    const flow = oneMinus(smoothstep(0, 0.02, abs(depth.sub(uProgress))));
+
+    const mask = dot.mul(flow).mul(vec3(0, 10, 0));
+
+    const final = blendScreen(tMap, mask);
+
+    const material = new THREE.MeshBasicNodeMaterial({
+      colorNode: final,
+      transparent: true,
+      opacity: 0,
+    });
+
+    return {
+      material,
+      uniforms: {
+        uPointer,
+        uProgress,
+      },
+    };
+  }, [rawMap, depthMap]);
+
+  const [w, h] = useAspect(WIDTH, HEIGHT);
+
+  useFrame(({ clock }) => {
+    uniforms.uProgress.value = (Math.sin(clock.getElapsedTime() * 0.5) * 0.5 + 0.5);
+    // Плавное появление
+    if (meshRef.current && 'material' in meshRef.current && meshRef.current.material) {
+      const mat = meshRef.current.material as any;
+      if ('opacity' in mat) {
+        mat.opacity = THREE.MathUtils.lerp(
+          mat.opacity,
+          visible ? 1 : 0,
+          0.07
+        );
+      }
+    }
+  });
+
+  useFrame(({ pointer }) => {
+    uniforms.uPointer.value = pointer;
+  });
+
+  const scaleFactor = 0.40;
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image with Overlay */}
-      <div className="absolute inset-0 z-0">
-        <img 
-          src={heroImage} 
-          alt="Sustainable metallurgy facility" 
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/60"></div>
-      </div>
-
-      {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="max-w-4xl mx-auto">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/50 border border-primary/20 mb-8">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium text-accent-foreground">AI-Powered Sustainability</span>
-          </div>
-
-          {/* Main Heading */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold mb-6">
-            <span className="bg-gradient-hero bg-clip-text text-transparent">
-              Metallurgy LCA Tool
-            </span>
-          </h1>
-
-          {/* Tagline */}
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
-            Empowering metals industry with sustainable lifecycle insights through 
-            <span className="text-primary font-semibold"> AI-powered analysis</span>
-          </p>
-
-          {/* Description */}
-          <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">
-            Transform your metal production processes with comprehensive lifecycle assessments. 
-            Optimize for sustainability, reduce environmental impact, and embrace circular economy principles.
-          </p>
-
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              size="lg" 
-              onClick={onGetStarted}
-              className="group bg-gradient-hero hover:shadow-large transition-all duration-300 transform hover:-translate-y-1"
-            >
-              Get Started Free
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              size="lg"
-              className="border-primary/30 hover:bg-primary/5 transition-all duration-300"
-            >
-              Watch Demo
-            </Button>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 pt-8 border-t border-border/50">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">50+</div>
-              <div className="text-muted-foreground">Metal Types Supported</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-secondary mb-2">95%</div>
-              <div className="text-muted-foreground">Accuracy Rate</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary mb-2">30%</div>
-              <div className="text-muted-foreground">Average Emission Reduction</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <mesh ref={meshRef} scale={[w * scaleFactor, h * scaleFactor, 1]} material={material}>
+      <planeGeometry />
+    </mesh>
   );
 };
+
+export const HeroSection = () => {
+const titleWords = 'AI-Powered LCA Platform'.split(' ');
+const subtitle = 'Enabling circularity and sustainability in metals through data-driven insights.';
+
+  const [visibleWords, setVisibleWords] = useState(0);
+  const [subtitleVisible, setSubtitleVisible] = useState(false);
+  const [delays, setDelays] = useState<number[]>([]);
+  const [subtitleDelay, setSubtitleDelay] = useState(0);
+
+  useEffect(() => {
+    // Только на клиенте: генерируем случайные задержки для глитча
+    setDelays(titleWords.map(() => Math.random() * 0.07));
+    setSubtitleDelay(Math.random() * 0.1);
+  }, [titleWords.length]);
+
+  useEffect(() => {
+    if (visibleWords < titleWords.length) {
+      const timeout = setTimeout(() => setVisibleWords(visibleWords + 1), 600);
+      return () => clearTimeout(timeout);
+    } else {
+      const timeout = setTimeout(() => setSubtitleVisible(true), 800);
+      return () => clearTimeout(timeout);
+    }
+  }, [visibleWords, titleWords.length]);
+
+  return (
+    <div className="h-svh">
+      <div className="h-svh uppercase items-center w-full absolute z-60 pointer-events-none px-10 flex justify-center flex-col">
+        <div className="text-3xl md:text-5xl xl:text-6xl 2xl:text-7xl font-extrabold">
+          <div className="flex space-x-2 lg:space-x-6 overflow-hidden text-white">
+            {titleWords.map((word, index) => (
+              <div
+                key={index}
+                className={index < visibleWords ? 'fade-in' : ''}
+                style={{ animationDelay: `${index * 0.13 + (delays[index] || 0)}s`, opacity: index < visibleWords ? undefined : 0 }}
+              >
+                {word}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="text-xs md:text-xl xl:text-2xl 2xl:text-3xl mt-2 overflow-hidden text-white font-bold">
+          <div
+            className={subtitleVisible ? 'fade-in-subtitle' : ''}
+            style={{ animationDelay: `${titleWords.length * 0.13 + 0.2 + subtitleDelay}s`, opacity: subtitleVisible ? undefined : 0 }}
+          >
+            {subtitle}
+          </div>
+          
+        </div>
+      </div>
+
+      
+
+      <Canvas
+        flat
+        gl={async (props) => {
+          const renderer = new THREE.WebGPURenderer(props as any);
+          await renderer.init();
+          return renderer;
+        }}
+      >
+        <PostProcessing fullScreenEffect={true} />
+        <Scene />
+      </Canvas>
+    </div>
+  );
+};
+
+export default HeroSection;
