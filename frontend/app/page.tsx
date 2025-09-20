@@ -12,7 +12,7 @@ const Landing = () => {
   const router = useRouter();
 
   const handleGetStarted = () => {
-    router.push("/dashboard");
+    router.push("/projects");
   };
 
   return (
