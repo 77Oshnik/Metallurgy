@@ -225,7 +225,7 @@ export default function CircularComparison({ ProjectIdentifier }: { ProjectIdent
 
 			{isLinear ? (
 				<div className="bg-card p-6 rounded-lg border space-y-6">
-					<h3 className="text-xl font-bold text-center">Linear Process Analysis</h3>
+					<h3 className="text-xl font-bold text-center">Linear Process Implementing Circular Stage 6 - EndOfLife Stage </h3>
 					
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 						<SummaryCard title="Initial Impact (Stages 1-5)" data={data.totalOutputsStages1to5} />

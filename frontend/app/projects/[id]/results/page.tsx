@@ -148,6 +148,53 @@ export default function ResultsPage() {
     return indicators;
   };
 
+  // Helper to render complex output values (numbers, objects, arrays) in a readable way
+  const renderOutputValue = (value: any) => {
+    if (value === null || value === undefined) return "—";
+    if (typeof value === "number") return value.toFixed(3);
+    if (typeof value === "string") return value;
+
+    if (Array.isArray(value)) {
+      // Array of primitives or objects
+      return (
+        <ul className="list-disc list-inside text-sm">
+          {value.map((item, idx) => (
+            <li key={idx} className="py-1">
+              {typeof item === "object" ? (
+                <div className="text-sm">
+                  {Object.entries(item).map(([k, v]) => (
+                    <div key={k} className="flex justify-between">
+                      <span className="text-muted-foreground">{k.replace(/([A-Z])/g, ' $1')}</span>
+                      <span>{typeof v === 'number' ? v.toFixed(3) : String(v)}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                String(item)
+              )}
+            </li>
+          ))}
+        </ul>
+      );
+    }
+
+    // Plain object -> render inner key/value pairs
+    if (typeof value === "object") {
+      return (
+        <div className="space-y-1 text-sm">
+          {Object.entries(value).map(([k, v]) => (
+            <div key={k} className="flex justify-between">
+              <span className="text-muted-foreground">{k.replace(/([A-Z])/g, ' $1')}</span>
+              <span>{typeof v === 'number' ? v.toFixed(3) : String(v)}</span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    return String(value);
+  };
+
   const exportResults = () => {
     const exportData = {
       project,
@@ -408,15 +455,13 @@ export default function ResultsPage() {
                       </CardHeader>
                       <CardContent className="space-y-3">
                         {Object.entries(result.outputs).map(([key, value]) => (
-                          <div key={key} className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600 flex-1">
+                          <div key={key} className="flex flex-col md:flex-row md:items-center md:justify-between">
+                            <div className="text-sm text-gray-600 mb-1 md:mb-0 md:flex-1">
                               {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                            </span>
-                            <span className="font-medium text-right">
-                              {typeof value === 'number' ? value.toFixed(3) : 
-                               typeof value === 'object' ? JSON.stringify(value) : 
-                               String(value)}
-                            </span>
+                            </div>
+                            <div className="font-medium text-right w-full md:w-1/2">
+                              {renderOutputValue(value)}
+                            </div>
                           </div>
                         ))}
                       </CardContent>
