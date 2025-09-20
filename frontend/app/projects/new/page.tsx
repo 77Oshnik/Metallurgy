@@ -49,10 +49,12 @@ export default function NewProjectPage() {
 
     setLoading(true);
 
-    try {
-      const response = await fetch('http://localhost:5000/api/projects', {
-        method: 'POST',
-        headers: {
+    const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/projects`, {
+      method: 'GET', // or POST/PUT/etc., depending on your API
+      headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),

@@ -35,10 +35,10 @@ export default function DebugPage() {
       setLoading(false);
     }
   };
-
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
   const testBackendDirect = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/health');
+      const response = await fetch(`${BACKEND_URL}/api/health`);
       const data = await response.json();
       alert('Direct backend connection successful!\n' + JSON.stringify(data, null, 2));
     } catch (err) {
@@ -182,7 +182,10 @@ export default function DebugPage() {
                 <Button onClick={testBackendDirect} variant="outline">
                   Test Direct Backend Connection
                 </Button>
-                <Button onClick={() => window.open('http://localhost:5000/api/health', '_blank')} variant="outline">
+                 <Button
+    onClick={() => window.open(`${BACKEND_URL}/api/health`, '_blank')}
+    variant="outline"
+  >
                   Open Backend Health Check
                 </Button>
               </div>
