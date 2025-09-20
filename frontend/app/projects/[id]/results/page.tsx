@@ -1483,28 +1483,19 @@ export default function ResultsPage() {
 
                   {/* Stage Outputs */}
                   <div className="grid md:grid-cols-2 gap-4">
-                    <Card>
+                     <Card>
                       <CardHeader>
                         <CardTitle className="text-lg">Key Outputs</CardTitle>
                       </CardHeader>
                       <CardContent className="space-y-3">
                         {Object.entries(result.outputs).map(([key, value]) => (
-                          <div
-                            key={key}
-                            className="flex justify-between items-center"
-                          >
-                            <span className="text-sm text-gray-600 flex-1">
-                              {key
-                                .replace(/([A-Z])/g, " $1")
-                                .replace(/^./, (str) => str.toUpperCase())}
-                            </span>
-                            <span className="font-medium text-right">
-                              {typeof value === "number"
-                                ? value.toFixed(3)
-                                : typeof value === "object"
-                                ? JSON.stringify(value)
-                                : String(value)}
-                            </span>
+                          <div key={key} className="flex flex-col md:flex-row md:items-center md:justify-between">
+                            <div className="text-sm text-gray-600 mb-1 md:mb-0 md:flex-1">
+                              {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                            </div>
+                            <div className="font-medium text-right w-full md:w-1/2">
+                              {renderOutputValue(value)}
+                            </div>
                           </div>
                         ))}
                       </CardContent>

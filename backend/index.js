@@ -32,6 +32,8 @@ app.use("/api/fabrication", require("./routes/fabricationRoutes"));
 app.use("/api/use-phase", require("./routes/usePhaseRoutes"));
 app.use("/api/end-of-life", require("./routes/endOfLifeRoutes"));
 app.use('/api/comparison', require('./routes/comparisonRoutes'));
+app.use('/api/whatif', require('./routes/whatifRoutes'));
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
