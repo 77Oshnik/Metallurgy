@@ -53,7 +53,7 @@ export default function NewProjectPage() {
 
   try {
     const response = await fetch(`${BACKEND_URL}/api/projects`, {
-      method: 'GET', // or POST/PUT/etc., depending on your API
+      method: 'POST', // or POST/PUT/etc., depending on your API
       headers: {
           'Content-Type': 'application/json',
         },
