@@ -23,6 +23,7 @@ export default function ProjectsPage() {
   useEffect(() => {
     fetchProjects();
   }, []);
+  // sample comment
 
   const fetchProjects = async () => {
     try {
