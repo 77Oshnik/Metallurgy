@@ -21,6 +21,7 @@ import {
   TreePine,
   BarChart3,
   Sun,
+  AlertTriangle,
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/components/ui/use-toast";
@@ -282,12 +283,6 @@ export default function ResultsPage() {
               </div>
             </div>
             <div className="flex gap-3">
-              <Link href={`/projects/${projectId}/renewable`}>
-                <Button variant="outline">
-                  <Sun className="h-4 w-4 mr-2" />
-                  Energy Transition
-                </Button>
-              </Link>
               <Button onClick={exportResults}>
                 <Download className="h-4 w-4 mr-2" />
                 Export Results
@@ -1380,16 +1375,40 @@ export default function ResultsPage() {
 
         {/* Comparison Toggle Button (always visible, no hover) */}
         <div className="mb-8">
-          <div className="max-w-3xl mx-auto px-4">
-            <Button
-              onClick={() => setShowComparison((s) => !s)}
-              className="w-full py-3 "
-              style={{ opacity: 1, visibility: "visible", transition: "none" }}
-            >
-              {showComparison
-                ? "Hide Circular Comparison"
-                : "Show Circular Comparison"}
-            </Button>
+          <div className="max-w-4xl mx-auto px-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+              <Button
+                onClick={() => setShowComparison((s) => !s)}
+                className="w-full py-3"
+                style={{ opacity: 1, visibility: "visible", transition: "none" }}
+                variant="outline"
+              >
+                <BarChart3 className="h-4 w-4 mr-2" />
+                {showComparison
+                  ? "Hide Circular Comparison"
+                  : "Show Circular Comparison"}
+              </Button>
+              
+              <Link href={`/projects/${projectId}/harmful-effects-analyzer`} className="w-full">
+                <Button
+                  className="w-full py-3 bg-red-50 hover:bg-red-100 border-red-200 text-red-700"
+                  variant="outline"
+                >
+                  <AlertTriangle className="h-4 w-4 mr-2" />
+                  Harmful Effects
+                </Button>
+              </Link>
+              
+              <Link href={`/projects/${projectId}/renewable`} className="w-full">
+                <Button
+                  className="w-full py-3 bg-yellow-50 hover:bg-yellow-100 border-yellow-200 text-yellow-700"
+                  variant="outline"
+                >
+                  <Sun className="h-4 w-4 mr-2" />
+                  Energy Transition
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
 

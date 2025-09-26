@@ -14,6 +14,24 @@ const stageModels = [
     EndOfLifeStage
 ];
 
+/**
+ * Get the appropriate model for a given stage name
+ * @param {string} stageName - Name of the stage
+ * @returns {Model|null} - Mongoose model or null if not found
+ */
+function getStageModel(stageName) {
+    const stageModelMap = {
+        'Mining': MiningStage,
+        'Concentration': ConcentrationStage,
+        'Smelting and Refining': SmeltingStage,
+        'Fabrication': FabricationStage,
+        'Use Phase': UsePhaseStage,
+        'End of Life': EndOfLifeStage
+    };
+    
+    return stageModelMap[stageName] || null;
+}
+
 const aggregateStageData = async (projectId, numberOfStages) => {
     let totalCarbonFootprint = 0;
     let totalEnergyFootprint = 0;
@@ -62,4 +80,4 @@ const aggregateStageData = async (projectId, numberOfStages) => {
     };
 };
 
-module.exports = { aggregateStageData };
+module.exports = { aggregateStageData, getStageModel };

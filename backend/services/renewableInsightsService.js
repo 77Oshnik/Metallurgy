@@ -2,7 +2,6 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 class RenewableInsightsService {
   constructor() {
-    // Use the same API key as the main AI service
     const apiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_CHATBOT_API_KEY;
     if (!apiKey) {
       console.warn('No Gemini API key found. AI insights will be disabled.');
@@ -15,18 +14,12 @@ class RenewableInsightsService {
     this.model = this.genAI.getGenerativeModel({ 
       model: process.env.GEMINI_MODEL || process.env.CHATBOT_MODEL || 'gemini-1.5-flash',
       generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 1500,
+        temperature: 0.6,
+        maxOutputTokens: 1800,
       }
     });
   }
 
-  /**
-   * Generate detailed insights for renewable energy transition scenarios
-   * @param {Object} scenarioData - The energy transition scenario data
-   * @param {Object} projectContext - Project context information
-   * @returns {Promise<Object>} AI-generated insights
-   */
   async generateRenewableInsights(scenarioData, projectContext) {
     if (!this.enabled) {
       return this.getFallbackInsights(scenarioData, projectContext);
@@ -34,12 +27,10 @@ class RenewableInsightsService {
 
     try {
       const prompt = this.formatInsightsPrompt(scenarioData, projectContext);
-      
       const result = await this.model.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
 
-      // Parse the JSON response
       const insights = this.parseInsightsResponse(text);
       
       return {
@@ -62,11 +53,15 @@ class RenewableInsightsService {
   }
 
   /**
-   * Format the prompt for generating insights
+   * 📌 Improved Prompt for Renewable Energy Insights
    */
   formatInsightsPrompt(scenarioData, projectContext) {
-    return `You are an expert sustainability consultant and metallurgist. Based on the following renewable energy transition scenario, provide 5 detailed, realistic insights about the environmental and economic impacts of this transition.
+    return `You are a professional sustainability and metallurgy consultant.
+You specialize in Life Cycle Assessment (LCA), industrial decarbonization, and renewable integration in metallurgy.
 
+We are analyzing a renewable energy transition scenario in a ${projectContext.MetalType} project.
+
+---
 PROJECT CONTEXT:
 - Project Name: ${projectContext.ProjectName}
 - Metal Type: ${projectContext.MetalType}
@@ -74,7 +69,7 @@ PROJECT CONTEXT:
 - Stage: ${scenarioData.StageName}
 - Functional Unit: ${projectContext.FunctionalUnitMassTonnes} tonnes
 
-RENEWABLE ENERGY TRANSITION SCENARIO:
+SCENARIO DATA:
 - Baseline Carbon Footprint: ${scenarioData.BaselineCarbonFootprintKilogramsCO2ePerFunctionalUnit.toFixed(2)} kg CO₂e/FU
 - Scenario Carbon Footprint: ${scenarioData.ScenarioCarbonFootprintKilogramsCO2ePerFunctionalUnit.toFixed(2)} kg CO₂e/FU
 - Carbon Reduction: ${scenarioData.CarbonReductionPercent.toFixed(1)}%
@@ -87,49 +82,44 @@ RENEWABLE ENERGY TRANSITION SCENARIO:
   * Geothermal: ${scenarioData.UserScenario.EnergySourceMix.geothermal}%
   * Biomass: ${scenarioData.UserScenario.EnergySourceMix.biomass}%
 
-Please provide 5 detailed insights in the following JSON format. Each insight should be realistic, specific, and actionable. Include quantifiable benefits where possible:
+---
+TASK:
+Provide **exactly 5 detailed insights** in JSON format.
+Each must be:
+- Industry-specific, realistic, and professionally written.
+- Include **quantitative values** (e.g., % reduction, kg CO₂/t, $/t, MW, hectares).
+- Contextualized to metallurgy (smelting, refining, manufacturing).
+- Categorized under: environmental, economic, technical, regulatory, social.
 
+---
+RESPONSE FORMAT (STRICT JSON):
 {
   "insights": [
     {
-      "title": "Descriptive title of the insight",
-      "description": "Detailed explanation of the insight with specific numbers and real-world context",
+      "title": "Descriptive professional title",
+      "description": "Detailed explanation with real-world metallurgy context, specific numbers, technologies, and benchmarks.",
       "category": "environmental|economic|technical|regulatory|social",
-      "impact": "quantified impact with units where applicable",
+      "impact": "Quantified measurable impact (kg CO₂e, %, $/t, etc.)",
       "confidence": "high|medium|low"
     }
   ]
 }
 
-INSIGHT CATEGORIES:
-1. Environmental: Focus on emissions reductions, resource conservation, pollution prevention
-2. Economic: Focus on cost savings, investment requirements, ROI, operational expenses
-3. Technical: Focus on implementation challenges, technology requirements, infrastructure needs
-4. Regulatory: Focus on compliance benefits, policy alignment, certification advantages
-5. Social: Focus on community benefits, job creation, health improvements
+---
+INSIGHT CATEGORIES & EXPECTED DEPTH:
+1. Environmental → emission reductions, water use, air quality (e.g., “Reduction of 1,200 kg CO₂/t aluminum smelted by switching 50% to hydropower”).
+2. Economic → OPEX, CAPEX, ROI, carbon pricing savings, premium pricing potential.
+3. Technical → infrastructure, technology readiness (TRL), efficiency improvements, reliability.
+4. Regulatory → compliance with EU ETS, CBAM, ISO 14040/44, tax credits, green certification.
+5. Social → community jobs, ESG scores, worker health, customer perception.
 
-EXAMPLE RESPONSE FORMAT:
-{
-  "insights": [
-    {
-      "title": "Significant CO₂ Emission Reductions Achieved",
-      "description": "Transitioning to ${scenarioData.UserScenario.RenewableSharePercent}% renewable energy in the ${scenarioData.StageName} stage reduces CO₂ emissions by ${scenarioData.CarbonReductionPercent.toFixed(1)}%, equivalent to removing approximately X passenger vehicles from the road annually for a facility processing ${projectContext.FunctionalUnitMassTonnes} tonnes per year.",
-      "category": "environmental",
-      "impact": "${(scenarioData.BaselineCarbonFootprintKilogramsCO2ePerFunctionalUnit - scenarioData.ScenarioCarbonFootprintKilogramsCO2ePerFunctionalUnit).toFixed(2)} kg CO₂e/FU reduction",
-      "confidence": "high"
-    }
-  ]
-}
+Provide values where possible, e.g., “Energy savings of 3.5–4.2 GJ/t steel”, “Payback period ~5 years under EU carbon price of €90/t CO₂”.
 
-Provide exactly 5 insights, one for each category. Make them specific to metallurgy and the ${projectContext.MetalType} industry. Include realistic numbers and practical implications.`;
+Return JSON only.`;
   }
 
-  /**
-   * Parse the AI response and extract insights
-   */
   parseInsightsResponse(text) {
     try {
-      // Try to extract JSON from the response
       const jsonMatch = text.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
         const response = JSON.parse(jsonMatch[0]);
@@ -138,19 +128,12 @@ Provide exactly 5 insights, one for each category. Make them specific to metallu
     } catch (error) {
       console.error("Error parsing AI insights response:", error);
     }
-
-    // Fallback to extracting insights from plain text
     return this.extractInsightsFromText(text);
   }
 
-  /**
-   * Extract insights from plain text response
-   */
   extractInsightsFromText(text) {
-    // Simple extraction - in a real implementation, this would be more sophisticated
     const lines = text.split('\n').filter(line => line.trim() !== '');
     const insights = [];
-    
     for (let i = 0; i < Math.min(lines.length, 5); i++) {
       insights.push({
         title: `Insight ${i + 1}`,
@@ -160,13 +143,9 @@ Provide exactly 5 insights, one for each category. Make them specific to metallu
         confidence: "medium"
       });
     }
-    
     return insights;
   }
 
-  /**
-   * Get fallback insights when AI is disabled or fails
-   */
   getFallbackInsights(scenarioData, projectContext) {
     const reductionAmount = scenarioData.BaselineCarbonFootprintKilogramsCO2ePerFunctionalUnit - 
                            scenarioData.ScenarioCarbonFootprintKilogramsCO2ePerFunctionalUnit;

@@ -35,6 +35,7 @@ app.use('/api/comparison', require('./routes/comparisonRoutes'));
 app.use('/api/whatif', require('./routes/whatifRoutes'));
 app.use('/api/chatbot', require('./routes/chatbotRoutes'));
 app.use('/api/energy-transition', require('./routes/energyTransitionRoutes'));
+app.use('/api/harmful-effects', require('./routes/harmfulEffectsRoutes'));
 
 
 app.listen(PORT, () => {
