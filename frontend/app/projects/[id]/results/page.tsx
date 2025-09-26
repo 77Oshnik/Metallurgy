@@ -20,6 +20,7 @@ import {
   Droplets,
   TreePine,
   BarChart3,
+  Sun,
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/components/ui/use-toast";
@@ -280,10 +281,18 @@ export default function ResultsPage() {
                 </p>
               </div>
             </div>
-            <Button onClick={exportResults}>
-              <Download className="h-4 w-4 mr-2" />
-              Export Results
-            </Button>
+            <div className="flex gap-3">
+              <Link href={`/projects/${projectId}/renewable`}>
+                <Button variant="outline">
+                  <Sun className="h-4 w-4 mr-2" />
+                  Energy Transition
+                </Button>
+              </Link>
+              <Button onClick={exportResults}>
+                <Download className="h-4 w-4 mr-2" />
+                Export Results
+              </Button>
+            </div>
           </div>
         </div>
       </header>

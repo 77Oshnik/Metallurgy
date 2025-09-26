@@ -34,6 +34,7 @@ app.use("/api/end-of-life", require("./routes/endOfLifeRoutes"));
 app.use('/api/comparison', require('./routes/comparisonRoutes'));
 app.use('/api/whatif', require('./routes/whatifRoutes'));
 app.use('/api/chatbot', require('./routes/chatbotRoutes'));
+app.use('/api/energy-transition', require('./routes/energyTransitionRoutes'));
 
 
 app.listen(PORT, () => {
