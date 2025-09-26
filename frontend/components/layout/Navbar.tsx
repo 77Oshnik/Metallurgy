@@ -19,7 +19,7 @@ export const Navbar = ({ onGetStarted }: NavbarProps) => {
           {/* Logo */}
           <div className="flex items-center">
             <h1 className="text-xl font-bold tracking-wide text-green-500 hover:text-green-400 transition-colors cursor-pointer">
-              Metallurgy <span className="text-white">LCA Tool</span>
+              Metal<span className="text-white">Sphere</span>
             </h1>
           </div>
 
@@ -27,6 +27,9 @@ export const Navbar = ({ onGetStarted }: NavbarProps) => {
           <div className="hidden md:flex items-center space-x-10">
             <a href="#features" className="text-white/90 hover:text-green-400 transition-colors text-sm font-medium">
               Features
+            </a>
+            <a href="/carbon-trading" className="text-white/90 hover:text-green-400 transition-colors text-sm font-medium">
+              Carbon Trading
             </a>
             <a href="#about" className="text-white/90 hover:text-green-400 transition-colors text-sm font-medium">
               About
@@ -67,6 +70,13 @@ export const Navbar = ({ onGetStarted }: NavbarProps) => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 Features
+              </a>
+              <a
+                href="/carbon-trading"
+                className="block text-white/90 hover:text-green-400 transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Carbon Trading
               </a>
               <a
                 href="#about"

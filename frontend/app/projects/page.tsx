@@ -1,11 +1,26 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Plus, ArrowRight, Recycle, TrendingUp, BarChart3, Zap } from 'lucide-react';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  ArrowLeft,
+  Plus,
+  ArrowRight,
+  Recycle,
+  TrendingUp,
+  BarChart3,
+  Zap,
+  Leaf,
+} from "lucide-react";
 
 interface Project {
   _id: string;
@@ -29,22 +44,26 @@ export default function ProjectsPage() {
     try {
       // Use public env var so you can configure backend base URL.
       // If NEXT_PUBLIC_BACKEND_URL is not set, it will use relative path (works if Next proxies the API).
-      const base = process.env.NEXT_PUBLIC_BACKEND_URL ?? '';
+      const base = process.env.NEXT_PUBLIC_BACKEND_URL ?? "";
       const response = await fetch(`${base}/api/projects/`);
       if (response.ok) {
         const data = await response.json();
-        console.log('Fetched projects:', data); // Debug log
+        console.log("Fetched projects:", data); // Debug log
 
         // Accept both shapes: an array or { projects: [...] }
-        const projectsList = Array.isArray(data) ? data : (data.projects ?? []);
+        const projectsList = Array.isArray(data) ? data : data.projects ?? [];
         setProjects(projectsList);
       } else {
-        console.error('Failed to fetch projects:', response.status, response.statusText);
+        console.error(
+          "Failed to fetch projects:",
+          response.status,
+          response.statusText
+        );
         const errorData = await response.json().catch(() => ({}));
-        console.error('Error details:', errorData);
+        console.error("Error details:", errorData);
       }
     } catch (error) {
-      console.error('Error fetching projects:', error);
+      console.error("Error fetching projects:", error);
     } finally {
       setLoading(false);
     }
@@ -52,19 +71,21 @@ export default function ProjectsPage() {
 
   const getMetalIcon = (metalType: string) => {
     switch (metalType) {
-      case 'Aluminium':
-        return '🔩';
-      case 'Copper':
-        return '🔶';
-      case 'CriticalMinerals':
-        return '💎';
+      case "Aluminium":
+        return "🔩";
+      case "Copper":
+        return "🔶";
+      case "CriticalMinerals":
+        return "💎";
       default:
-        return '⚙️';
+        return "⚙️";
     }
   };
 
   const getProcessingModeColor = (mode: string) => {
-    return mode === 'Circular' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800';
+    return mode === "Circular"
+      ? "bg-green-100 text-green-800"
+      : "bg-blue-100 text-blue-800";
   };
 
   if (loading) {
@@ -95,12 +116,20 @@ export default function ProjectsPage() {
                 </p>
               </div>
             </div>
-            <Link href="/projects/new">
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                New Project
-              </Button>
-            </Link>
+            <div className="flex gap-3">
+              <Link href="/carbon-trading">
+                <Button variant="outline">
+                  <Leaf className="h-4 w-4 mr-2" />
+                  Carbon Trading
+                </Button>
+              </Link>
+              <Link href="/projects/new">
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Project
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -111,7 +140,9 @@ export default function ProjectsPage() {
             <div className="mx-auto h-24 w-24 text-gray-400 mb-4">
               <TrendingUp className="h-full w-full" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No projects yet</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              No projects yet
+            </h3>
             <p className="text-gray-500 mb-6">
               Get started by creating your first LCA project
             </p>
@@ -138,28 +169,34 @@ export default function ProjectsPage() {
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-green-100 text-sm">Circular Projects</p>
+                        <p className="text-green-100 text-sm">
+                          Circular Projects
+                        </p>
                         <p className="text-3xl font-bold">
-                          {projects.filter(p => p.ProcessingMode === 'Circular').length}
+                          {
+                            projects.filter(
+                              (p) => p.ProcessingMode === "Circular"
+                            ).length
+                          }
                         </p>
                       </div>
                       <div className="text-4xl opacity-80">♻️</div>
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-purple-100 text-sm">Metal Types</p>
                         <p className="text-3xl font-bold">
-                          {new Set(projects.map(p => p.MetalType)).size}
+                          {new Set(projects.map((p) => p.MetalType)).size}
                         </p>
                       </div>
                       <div className="text-4xl opacity-80">⚙️</div>
@@ -172,11 +209,14 @@ export default function ProjectsPage() {
             {/* Projects Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {projects.map((project) => (
-                <Link key={project._id} href={`/projects/${project._id}/results`}>
+                <Link
+                  key={project._id}
+                  href={`/projects/${project._id}/results`}
+                >
                   <Card className="hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group relative overflow-hidden">
                     {/* Background decoration */}
                     <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full -mr-10 -mt-10 opacity-50 group-hover:opacity-70 transition-opacity"></div>
-                    
+
                     <CardHeader className="relative z-10">
                       <div className="flex items-center justify-between">
                         <CardTitle className="flex items-center space-x-3">
@@ -192,18 +232,24 @@ export default function ProjectsPage() {
                             </div>
                           </div>
                         </CardTitle>
-                        <Badge className={`${getProcessingModeColor(project.ProcessingMode)} group-hover:scale-105 transition-transform`}>
+                        <Badge
+                          className={`${getProcessingModeColor(
+                            project.ProcessingMode
+                          )} group-hover:scale-105 transition-transform`}
+                        >
                           {project.ProcessingMode}
                         </Badge>
                       </div>
                     </CardHeader>
-                    
+
                     <CardContent className="relative z-10">
                       <div className="space-y-4">
                         {/* Project Details */}
                         <div className="grid grid-cols-2 gap-4 text-sm">
                           <div className="bg-gray-50 p-3 rounded-lg">
-                            <div className="text-gray-500 text-xs">Functional Unit</div>
+                            <div className="text-gray-500 text-xs">
+                              Functional Unit
+                            </div>
                             <div className="font-semibold text-gray-900">
                               {project.FunctionalUnitMassTonnes} tonnes
                             </div>
@@ -211,11 +257,13 @@ export default function ProjectsPage() {
                           <div className="bg-gray-50 p-3 rounded-lg">
                             <div className="text-gray-500 text-xs">Created</div>
                             <div className="font-semibold text-gray-900">
-                              {new Date(project.CreatedAtUtc).toLocaleDateString()}
+                              {new Date(
+                                project.CreatedAtUtc
+                              ).toLocaleDateString()}
                             </div>
                           </div>
                         </div>
-                        
+
                         {/* Action Indicators */}
                         <div className="flex items-center justify-between pt-2 border-t border-gray-100">
                           <div className="flex items-center space-x-2 text-sm text-gray-600">
@@ -224,26 +272,26 @@ export default function ProjectsPage() {
                           </div>
                           <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
                         </div>
-                        
+
                         {/* Quick Actions */}
                         <div className="flex space-x-2 pt-2">
-                          <Link 
-                            href={`/projects/${project._id}/workflow`} 
+                          <Link
+                            href={`/projects/${project._id}/workflow`}
                             className="flex-1"
                             onClick={(e) => e.stopPropagation()}
                           >
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
+                            <Button
+                              variant="outline"
+                              size="sm"
                               className="w-full text-xs hover:bg-blue-50 hover:border-blue-300"
                             >
                               <Recycle className="h-3 w-3 mr-1" />
                               Edit Workflow
                             </Button>
                           </Link>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
+                          <Button
+                            variant="outline"
+                            size="sm"
                             className="px-3 hover:bg-green-50 hover:border-green-300"
                             onClick={(e) => {
                               e.preventDefault();
@@ -256,14 +304,14 @@ export default function ProjectsPage() {
                         </div>
                       </div>
                     </CardContent>
-                    
+
                     {/* Hover overlay */}
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                   </Card>
                 </Link>
               ))}
             </div>
-            
+
             {/* Add New Project Card */}
             <div className="mt-8">
               <Link href="/projects/new">
@@ -273,9 +321,12 @@ export default function ProjectsPage() {
                       <div className="mx-auto h-16 w-16 text-gray-400 mb-4 flex items-center justify-center bg-white rounded-full">
                         <Plus className="h-8 w-8" />
                       </div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">Create New Project</h3>
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">
+                        Create New Project
+                      </h3>
                       <p className="text-gray-500">
-                        Start a new LCA assessment for your metal production process
+                        Start a new LCA assessment for your metal production
+                        process
                       </p>
                     </div>
                   </CardContent>
@@ -289,10 +340,18 @@ export default function ProjectsPage() {
                 <div className="absolute -left-32 -top-24 w-72 h-72 bg-gradient-to-tr from-blue-400/20 to-purple-500/10 rounded-full blur-3xl opacity-60 pointer-events-none"></div>
                 <div className="flex items-center justify-between mb-6 relative z-10">
                   <div>
-                    <h2 className="text-2xl font-bold text-white">Check Out Features</h2>
-                    <p className="text-sm text-slate-200/80">Explore the tools to simulate scenarios, compare workflows and visualize results.</p>
+                    <h2 className="text-2xl font-bold text-white">
+                      Check Out Features
+                    </h2>
+                    <p className="text-sm text-slate-200/80">
+                      Explore the tools to simulate scenarios, compare workflows
+                      and visualize results.
+                    </p>
                   </div>
-                  <Link href={`projects/${projects[0]?._id}/what-if`} className="relative z-10">
+                  <Link
+                    href={`projects/${projects[0]?._id}/what-if`}
+                    className="relative z-10"
+                  >
                     <Button className="bg-gradient-to-r from-green-400 to-blue-500 text-white hover:from-green-500 hover:to-blue-600">
                       Try the What‑If Tool
                       <ArrowRight className="ml-2 h-4 w-4" />
@@ -307,8 +366,13 @@ export default function ProjectsPage() {
                         <BarChart3 className="h-5 w-5" />
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold text-white">Scenario Analytics</h3>
-                        <p className="text-xs text-slate-200/70">Run what‑if scenarios to compare environmental impacts across alternatives.</p>
+                        <h3 className="text-sm font-semibold text-white">
+                          Scenario Analytics
+                        </h3>
+                        <p className="text-xs text-slate-200/70">
+                          Run what‑if scenarios to compare environmental impacts
+                          across alternatives.
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -319,8 +383,13 @@ export default function ProjectsPage() {
                         <TrendingUp className="h-5 w-5" />
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold text-white">Performance Insights</h3>
-                        <p className="text-xs text-slate-200/70">Visualize performance metrics and identify hotspots in your process chain.</p>
+                        <h3 className="text-sm font-semibold text-white">
+                          Performance Insights
+                        </h3>
+                        <p className="text-xs text-slate-200/70">
+                          Visualize performance metrics and identify hotspots in
+                          your process chain.
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -331,8 +400,13 @@ export default function ProjectsPage() {
                         <Zap className="h-5 w-5" />
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold text-white">Fast Simulation</h3>
-                        <p className="text-xs text-slate-200/70">Run quick predictive simulations and get instant feedback on alternatives.</p>
+                        <h3 className="text-sm font-semibold text-white">
+                          Fast Simulation
+                        </h3>
+                        <p className="text-xs text-slate-200/70">
+                          Run quick predictive simulations and get instant
+                          feedback on alternatives.
+                        </p>
                       </div>
                     </div>
                   </div>

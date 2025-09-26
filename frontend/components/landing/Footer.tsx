@@ -21,8 +21,8 @@ export const Footer = () => {
           {/* Company Info */}
           <div className="col-span-1 md:col-span-2">
             <h3 className="text-2xl font-bold  text-transparent mb-4 uppercase tracking-wider font-mono">
-              <span className="text-glitch" data-text="Metallurgy LCA Tool">
-                Metallurgy LCA Tool
+              <span className="text-glitch" data-text="MetalSphere">
+                MetalSphere
               </span>
             </h3>
             <p className="text-green-100/70 mb-6 max-w-md font-mono text-sm leading-relaxed">
