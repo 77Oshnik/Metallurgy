@@ -197,22 +197,33 @@ const analyzeByproductValorization = async (req, res) => {
 const getProjectValorizationScenarios = async (req, res) => {
   try {
     const { ProjectIdentifier } = req.params;
-    console.log('getProjectValorizationScenarios called for project:', ProjectIdentifier);
+    console.log('🔍 getProjectValorizationScenarios called for project:', ProjectIdentifier);
+    console.log('📋 Request details:', {
+      method: req.method,
+      url: req.originalUrl,
+      headers: req.headers,
+      timestamp: new Date().toISOString()
+    });
     
     // Validate ProjectIdentifier
     if (!mongoose.Types.ObjectId.isValid(ProjectIdentifier)) {
+      console.log('❌ Invalid Project Identifier:', ProjectIdentifier);
       return res.status(400).json({ error: 'Invalid Project Identifier' });
     }
     
     // Validate project exists
     const project = await Project.findById(ProjectIdentifier);
     if (!project) {
+      console.log('❌ Project not found:', ProjectIdentifier);
       return res.status(404).json({ error: 'Project not found' });
     }
+    console.log('✅ Project found:', project.ProjectName);
     
     // Find all scenarios for this project
     const scenarios = await ValorizationScenario.find({ ProjectIdentifier })
       .sort({ CreatedAtUtc: -1 });
+    
+    console.log(`📊 Found ${scenarios.length} scenarios for project`);
     
     if (scenarios.length === 0) {
       return res.status(200).json({
@@ -368,21 +379,27 @@ const deleteValorizationScenario = async (req, res) => {
 const getAvailableByproducts = async (req, res) => {
   try {
     const { ProjectIdentifier } = req.params;
-    console.log('getAvailableByproducts called for project:', ProjectIdentifier);
+    console.log('🔍 getAvailableByproducts called for project:', ProjectIdentifier);
+    console.log('📋 Request details:', {
+      method: req.method,
+      url: req.originalUrl,
+      headers: req.headers,
+      timestamp: new Date().toISOString()
+    });
     
     // Validate ProjectIdentifier
     if (!mongoose.Types.ObjectId.isValid(ProjectIdentifier)) {
-      console.log('Invalid Project Identifier:', ProjectIdentifier);
+      console.log('❌ Invalid Project Identifier:', ProjectIdentifier);
       return res.status(400).json({ error: 'Invalid Project Identifier' });
     }
     
     // Validate project exists
     const project = await Project.findById(ProjectIdentifier);
     if (!project) {
-      console.log('Project not found:', ProjectIdentifier);
+      console.log('❌ Project not found:', ProjectIdentifier);
       return res.status(404).json({ error: 'Project not found' });
     }
-    console.log('Project found:', project.ProjectName);
+    console.log('✅ Project found:', project.ProjectName);
     
     // Extract available byproducts
     const extractionService = new ByproductExtractionService();

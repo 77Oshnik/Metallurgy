@@ -173,17 +173,30 @@ class ValorizationService {
       method: options.method || 'GET',
       baseUrl: this.baseUrl,
       endpoint,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'unknown'
     });
     
     try {
-      const response = await fetch(url, {
+      const requestOptions = {
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
           ...options.headers,
         },
+        credentials: 'include' as RequestCredentials,
         ...options,
+      };
+      
+      // Log request details for debugging
+      console.log('📤 Request options:', {
+        method: requestOptions.method || 'GET',
+        headers: requestOptions.headers,
+        credentials: requestOptions.credentials,
+        hasBody: !!requestOptions.body
       });
+      
+      const response = await fetch(url, requestOptions);
 
       console.log('📡 Valorization API Response:', {
         url,
@@ -196,13 +209,35 @@ class ValorizationService {
 
       if (!response.ok) {
         let errorData;
+        const contentType = response.headers.get('content-type');
+        
         try {
-          errorData = await response.json();
+          if (contentType?.includes('application/json')) {
+            errorData = await response.json();
+          } else {
+            const textResponse = await response.text();
+            console.log('📄 Non-JSON error response:', textResponse.substring(0, 200));
+            
+            // Check if it's an HTML error page (common in production)
+            if (textResponse.includes('<!DOCTYPE') || textResponse.includes('<html')) {
+              errorData = { 
+                error: `Server returned HTML instead of JSON (Status: ${response.status})`,
+                details: 'This usually indicates a routing or server configuration issue',
+                suggestion: 'Check if the API server is running and routes are properly configured'
+              };
+            } else {
+              errorData = { 
+                error: `HTTP ${response.status}: ${response.statusText}`,
+                details: textResponse.substring(0, 100) + (textResponse.length > 100 ? '...' : '')
+              };
+            }
+          }
         } catch (parseError) {
           console.error('❌ Failed to parse error response:', parseError);
           errorData = { 
             error: `HTTP ${response.status}: ${response.statusText}`,
-            details: 'Failed to parse error response' 
+            details: 'Failed to parse error response',
+            parseError: parseError instanceof Error ? parseError.message : 'Unknown parse error'
           };
         }
         
