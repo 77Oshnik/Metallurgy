@@ -161,7 +161,7 @@ class ValorizationService {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000/api';
   }
 
   private async makeRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
