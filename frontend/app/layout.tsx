@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
+// updating prod
 export const metadata: Metadata = {
   title: "MetalSphere",
   description: "Metallurgy LCA",
