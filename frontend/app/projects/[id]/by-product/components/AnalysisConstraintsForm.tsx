@@ -151,7 +151,7 @@ export default function AnalysisConstraintsForm({
       {/* Header */}
       <div className="text-center space-y-2">
         <div className="flex items-center justify-center space-x-2">
-          <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg">
+          <div className="p-2 bg-green-600 rounded-lg">
             <Sparkles className="h-5 w-5 text-white" />
           </div>
           <h3 className="text-lg font-semibold">AI-Powered Valorization Analysis</h3>
@@ -366,7 +366,7 @@ export default function AnalysisConstraintsForm({
               <Button
                 onClick={handleSubmit}
                 disabled={isAnalyzing}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 w-full sm:w-auto"
+                className="bg-green-600 hover:bg-green-500 w-full sm:w-auto"
               >
                 {isAnalyzing ? (
                   <>

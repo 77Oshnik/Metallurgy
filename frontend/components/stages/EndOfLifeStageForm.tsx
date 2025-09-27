@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
@@ -38,6 +38,15 @@ export default function EndOfLifeStageForm({ projectId, project, onComplete, api
     TransportDistanceKilometersToRecycler: 'Transport Distance to Recycler (km)',
     DowncyclingFractionPercent: 'Downcycling Fraction (%)',
     LandfillSharePercent: 'Landfill Share (%)'
+  };
+
+  const fieldDescriptions: Record<string, string> = {
+    CollectionRatePercent: 'Percentage of end-of-life products that are collected for recycling',
+    RecyclingEfficiencyPercent: 'Efficiency of the recycling process in recovering usable materials',
+    RecyclingEnergyKilowattHoursPerTonneRecycled: 'Energy consumption required for recycling per tonne of material',
+    TransportDistanceKilometersToRecycler: 'Distance to transport waste materials to recycling facilities',
+    DowncyclingFractionPercent: 'Percentage of recycled material that becomes lower-grade products',
+    LandfillSharePercent: 'Percentage of end-of-life products that end up in landfills'
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -74,7 +83,10 @@ export default function EndOfLifeStageForm({ projectId, project, onComplete, api
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <Card>
-        <CardHeader><CardTitle>Mandatory Fields</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle>Mandatory Fields</CardTitle>
+          <CardDescription>These fields are required for end-of-life stage calculations</CardDescription>
+        </CardHeader>
         <CardContent className="space-y-4">
           {mandatoryFields.map(field => (
             <div key={field} className="space-y-2">
@@ -84,17 +96,22 @@ export default function EndOfLifeStageForm({ projectId, project, onComplete, api
                 step="0.001"
                 min="0"
                 max={field.includes('Percent') ? "100" : undefined}
+                placeholder={`Enter ${fieldLabels[field].toLowerCase()}`}
                 value={inputs[field as keyof typeof inputs]}
                 onChange={(e) => setInputs(prev => ({ ...prev, [field]: e.target.value }))}
                 required
               />
+              <p className="text-sm text-gray-500">{fieldDescriptions[field]}</p>
             </div>
           ))}
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader><CardTitle>Optional Fields</CardTitle></CardHeader>
+        <CardHeader>
+          <CardTitle>Optional Fields</CardTitle>
+          <CardDescription>These fields can be left empty if not applicable</CardDescription>
+        </CardHeader>
         <CardContent className="space-y-4">
           {optionalFields.map(field => (
             <div key={field} className="space-y-2">
@@ -104,9 +121,11 @@ export default function EndOfLifeStageForm({ projectId, project, onComplete, api
                 step="0.001"
                 min="0"
                 max={field.includes('Percent') ? "100" : undefined}
+                placeholder={`Enter ${fieldLabels[field].toLowerCase()} (optional)`}
                 value={inputs[field as keyof typeof inputs]}
                 onChange={(e) => setInputs(prev => ({ ...prev, [field]: e.target.value }))}
               />
+              <p className="text-sm text-gray-500">{fieldDescriptions[field]}</p>
             </div>
           ))}
         </CardContent>

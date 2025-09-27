@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 
 interface NavbarProps {
   onGetStarted?: () => void;
@@ -18,11 +20,21 @@ export const Navbar = ({ onGetStarted }: NavbarProps) => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <h1 className="text-xl font-bold tracking-wide text-green-500 hover:text-green-400 transition-colors cursor-pointer">
-              Metal<span className="text-white">Sphere</span>
-            </h1>
-          </div>
-
+    <Link href="/">
+      <div className="flex items-center space-x-2 cursor-pointer group">
+        <Image
+          src="/logo.png"
+          alt="MetalSphere Logo"
+          width={40}
+          height={40}
+          className="transition-transform group-hover:scale-105 rounded-3xl"
+        />
+        <h1 className="text-xl font-bold tracking-wide text-green-500 group-hover:text-green-400 transition-colors">
+          Metal<span className="text-white">Sphere</span>
+        </h1>
+      </div>
+    </Link>
+  </div>
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-10">
             <a href="#features" className="text-white/90 hover:text-green-400 transition-colors text-sm font-medium">

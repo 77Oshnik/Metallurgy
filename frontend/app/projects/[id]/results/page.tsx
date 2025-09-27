@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/components/ui/use-toast";
-import ProjectLayout from "@/components/ProjectLayout";
+import ProjectNavbar from "@/components/layout/ProjectNavbar";
 import CircularComparison from "@/components/CircularComparison";
 
 interface Project {
@@ -261,33 +261,35 @@ export default function ResultsPage() {
   const circularityIndicators = getCircularityIndicators();
 
   return (
-    <ProjectLayout>
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b rounded-lg mb-6">
-        <div className="px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  LCA Results
-                </h1>
-                <p className="text-sm text-gray-500">
-                  {project?.ProjectName} • {project?.MetalType} •{" "}
-                  {project?.ProcessingMode}
-                </p>
+    <div className="min-h-screen ">
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <header className="bg-white shadow-sm border-b rounded-lg mb-8">
+          <div className="px-6 py-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                    LCA Results
+                  </h1>
+                  <p className="text-lg text-gray-600">
+                    {project?.ProjectName} • {project?.MetalType} •{" "}
+                    {project?.ProcessingMode}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <Button onClick={exportResults} size="lg">
+                  <Download className="h-4 w-4 mr-2" />
+                  Export Results
+                </Button>
               </div>
             </div>
-            <div className="flex gap-3">
-              <Button onClick={exportResults}>
-                <Download className="h-4 w-4 mr-2" />
-                Export Results
-              </Button>
-            </div>
           </div>
-        </div>
-      </header>
+        </header>
         {/* Summary Cards with Enhanced Visuals */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           <Card className="relative overflow-hidden">
             <div className="absolute top-0 right-0 w-20 h-20 bg-green-100 rounded-full -mr-10 -mt-10 opacity-50"></div>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -433,7 +435,7 @@ export default function ResultsPage() {
         </div>
 
         {/* Interactive Charts Section */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid lg:grid-cols-2 gap-8 mb-10">
           {/* Bar Chart - Environmental Impact by Stage */}
           <Card>
             <CardHeader>
@@ -727,7 +729,7 @@ export default function ResultsPage() {
         </div>
 
         {/* Line Chart - Cumulative Impact Trend */}
-        <Card className="mb-8">
+        <Card className="mb-10">
           <CardHeader>
             <CardTitle className="flex items-center">
               <Zap className="h-5 w-5 mr-2 text-purple-600" />
@@ -987,7 +989,7 @@ export default function ResultsPage() {
 
         {/* Enhanced Circularity Indicators with Radar Chart */}
         {Object.keys(circularityIndicators).length > 0 && (
-          <div className="grid lg:grid-cols-3 gap-8 mb-8">
+          <div className="grid lg:grid-cols-3 gap-8 mb-10">
             {/* Circularity Metrics Cards */}
             <div className="lg:col-span-2">
               <Card>
@@ -1369,14 +1371,14 @@ export default function ResultsPage() {
 
 
         {/* Detailed Results */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Detailed Stage Results</CardTitle>
-            <CardDescription>
+        <Card className="mb-12">
+          <CardHeader className="pb-6">
+            <CardTitle className="text-2xl">Detailed Stage Results</CardTitle>
+            <CardDescription className="text-lg">
               Comprehensive results for each completed stage
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <Tabs
               defaultValue={
                 results[0]?.stageName.toLowerCase().replace(/[^a-z0-9]/g, "") ||
@@ -1403,12 +1405,12 @@ export default function ResultsPage() {
                   value={result.stageName
                     .toLowerCase()
                     .replace(/[^a-z0-9]/g, "")}
-                  className="space-y-4"
+                  className="space-y-6 mt-6"
                 >
                   {/* AI Prediction Summary */}
                   {result.predictionSummary &&
                     result.predictionSummary.aiPredictedFields > 0 && (
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
                         <h4 className="font-semibold text-blue-900 mb-2">
                           AI Prediction Summary
                         </h4>
@@ -1650,7 +1652,7 @@ export default function ResultsPage() {
           </div>
 
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
             {/* Show Comparison Feature */}
             <Card className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-blue-200 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-100 to-transparent rounded-full -mr-16 -mt-16 opacity-50 group-hover:opacity-70 transition-opacity"></div>
@@ -1770,7 +1772,7 @@ export default function ResultsPage() {
             </Card>
           </div>
 
-              {/* Render CircularComparison when toggled - Below Banner */}
+          {/* Render CircularComparison when toggled - Below Banner */}
           {showComparison && (
             <div className="mt-12 mb-12 max-w-4xl mx-auto">
               <CircularComparison ProjectIdentifier={projectId} />
@@ -1778,7 +1780,7 @@ export default function ResultsPage() {
           )}
 
           {/* Additional Information Section */}
-          <div className="mt-12 text-center">
+          <div className="mt-16 text-center mb-12">
             <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
               <CardContent className="py-8">
                 <div className="flex items-center justify-center mb-4">
@@ -1799,6 +1801,7 @@ export default function ResultsPage() {
             </Card>
           </div>
         </div>
-    </ProjectLayout>
+      </div>
+    </div>
   );
 }

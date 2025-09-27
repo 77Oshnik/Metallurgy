@@ -58,6 +58,15 @@ export default function ConcentrationStageForm({ projectId, project, onComplete,
     WaterRecycleRatePercent: 'Water Recycle Rate (%)'
   };
 
+  const fieldDescriptions: Record<string, string> = {
+    RecoveryYieldPercent: 'Percentage of valuable metal recovered from ore during concentration',
+    GrindingEnergyKilowattHoursPerTonneConcentrate: 'Energy required for grinding ore to produce concentrate',
+    TailingsVolumeTonnesPerTonneConcentrate: 'Volume of waste tailings generated per tonne of concentrate',
+    ConcentrationReagentsKilogramsPerTonneConcentrate: 'Chemical reagents used in flotation and concentration processes',
+    ConcentrationWaterCubicMetersPerTonneConcentrate: 'Water consumption for concentration processes per tonne of concentrate',
+    WaterRecycleRatePercent: 'Percentage of process water that is recycled and reused'
+  };
+
   const handleInputChange = (field: keyof ConcentrationInputs, value: string) => {
     setInputs(prev => ({
       ...prev,
@@ -151,6 +160,7 @@ export default function ConcentrationStageForm({ projectId, project, onComplete,
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Mandatory Fields</CardTitle>
+          <CardDescription>These fields are required for concentration stage calculations</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {mandatoryFields.map(field => (
@@ -164,10 +174,12 @@ export default function ConcentrationStageForm({ projectId, project, onComplete,
                 type="number"
                 step="0.001"
                 min="0"
+                placeholder={`Enter ${fieldLabels[field].toLowerCase()}`}
                 value={inputs[field as keyof ConcentrationInputs]}
                 onChange={(e) => handleInputChange(field as keyof ConcentrationInputs, e.target.value)}
                 required
               />
+              <p className="text-sm text-gray-500">{fieldDescriptions[field]}</p>
             </div>
           ))}
         </CardContent>
@@ -176,6 +188,7 @@ export default function ConcentrationStageForm({ projectId, project, onComplete,
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Optional Fields</CardTitle>
+          <CardDescription>These fields can be left empty and will be predicted by AI if enabled</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {optionalFields.map(field => (
@@ -190,9 +203,11 @@ export default function ConcentrationStageForm({ projectId, project, onComplete,
                 step="0.001"
                 min="0"
                 max={field.includes('Percent') ? "100" : undefined}
+                placeholder={`Enter ${fieldLabels[field].toLowerCase()} (optional)`}
                 value={inputs[field as keyof ConcentrationInputs]}
                 onChange={(e) => handleInputChange(field as keyof ConcentrationInputs, e.target.value)}
               />
+              <p className="text-sm text-gray-500">{fieldDescriptions[field]}</p>
             </div>
           ))}
         </CardContent>

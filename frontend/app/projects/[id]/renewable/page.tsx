@@ -265,7 +265,7 @@ export default function RenewableTransitionPage() {
   }
 
   return (
-    <ProjectLayout>
+    <div>
       {/* Feature Banner */}
       <div className="mb-6">
         <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-200 rounded-lg p-4">
@@ -692,6 +692,6 @@ export default function RenewableTransitionPage() {
             )}
           </div>
         </div>
-    </ProjectLayout>
+    </div>
   );
 }

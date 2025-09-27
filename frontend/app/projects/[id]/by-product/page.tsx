@@ -208,7 +208,7 @@ export default function ByproductValorizationPage() {
     return (
       <div className="container mx-auto p-6 space-y-6">
         <div className="flex items-center space-x-2">
-          <Sparkles className="h-8 w-8 text-purple-600" />
+          <Sparkles className="h-8 w-8 text-green-600" />
           <h1 className="text-3xl font-bold">Byproduct Valorization</h1>
         </div>
         
@@ -243,17 +243,17 @@ export default function ByproductValorizationPage() {
   }
 
   return (
-    <ProjectLayout>
+    <div>
       {/* Feature Banner */}
       <div className="mb-6">
-        <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-200 rounded-lg p-4">
+        <div className="bg-gradient-to-r from-green-500/10 to-green-500/10 border border-green-200 rounded-lg p-4">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Sparkles className="h-6 w-6 text-purple-600" />
+            <div className="p-2 bg-green-100 rounded-lg">
+              <Sparkles className="h-6 w-6 text-green-600" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-purple-900">Byproduct Valorization Engine</h1>
-              <p className="text-sm text-purple-700">
+              <h1 className="text-xl font-bold text-green-900">Byproduct Valorization Engine</h1>
+              <p className="text-sm text-green-700">
                 Transform waste streams into valuable revenue opportunities with AI-powered analysis
               </p>
             </div>
@@ -263,11 +263,11 @@ export default function ByproductValorizationPage() {
       {/* Header */}
       <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg">
+          <div className="p-2 bg-green-600 rounded-lg">
             <Sparkles className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl font-bold bg-green-600 bg-clip-text text-transparent">
               Byproduct Valorization
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground">
@@ -293,7 +293,7 @@ export default function ByproductValorizationPage() {
           
           <Dialog open={showConstraintsForm} onOpenChange={setShowConstraintsForm}>
             <DialogTrigger asChild>
-              <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 w-full sm:w-auto">
+              <Button className="bg-green-600 hover:bg-green-500 w-full sm:w-auto">
                 <PlayCircle className="h-4 w-4 mr-2" />
                 Start Analysis
               </Button>
@@ -540,6 +540,6 @@ export default function ByproductValorizationPage() {
           onUpdate={loadScenarios}
         />
       )}
-    </ProjectLayout>
+    </div>
   );
 }

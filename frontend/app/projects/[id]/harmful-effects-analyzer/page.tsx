@@ -289,7 +289,7 @@ export default function HarmfulEffectsAnalyzerPage() {
   }
 
   return (
-    <ProjectLayout>
+    <div>
       {/* Feature Banner */}
       <div className="mb-6">
         <div className="bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-200 rounded-lg p-4">
@@ -549,6 +549,6 @@ export default function HarmfulEffectsAnalyzerPage() {
             )}
           </div>
         </div>
-    </ProjectLayout>
+    </div>
   );
 }
