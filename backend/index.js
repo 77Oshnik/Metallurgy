@@ -7,7 +7,21 @@ const connectDB = require("./config/db");
 app.use(express.json());
 require("dotenv").config();
 
-app.use(cors());
+const allowedOrigins = [
+  "https://metallurgy-q8bv.vercel.app", // your Vercel frontend
+  "http://localhost:3000"              // local dev
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true // allow cookies/auth headers
+}));
 
 // Connect to Database
 connectDB();
