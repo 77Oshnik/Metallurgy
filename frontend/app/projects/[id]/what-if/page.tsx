@@ -19,10 +19,10 @@ export default function Page({ params }: { params: { id: string } }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-6">
-              <Link href={`/projects/${projectId}/workflow`}>
+              <Link href={`/projects`}>
                 <Button variant="ghost" size="sm" className="group hover:bg-blue-50 transition-all duration-300">
                   <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-                  Back to Workflow
+                  Back to Projects
                 </Button>
               </Link>
               <div className="border-l border-gray-300 pl-6">

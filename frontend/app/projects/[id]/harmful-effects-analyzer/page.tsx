@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/components/ui/use-toast";
+import ProjectLayout from "@/components/ProjectLayout";
 import { 
   analyzeHarmfulEffects, 
   getHarmfulEffectScenarios, 
@@ -288,31 +289,25 @@ export default function HarmfulEffectsAnalyzerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link href={`/projects/${projectId}/results`}>
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Results
-                </Button>
-              </Link>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Harmful Effects Analyzer</h1>
-                <p className="text-sm text-gray-500">
-                  Analyze environmental and operational impacts for {project?.ProjectName}
-                </p>
-              </div>
+    <ProjectLayout>
+      {/* Feature Banner */}
+      <div className="mb-6">
+        <div className="bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-red-100 rounded-lg">
+              <AlertTriangle className="h-6 w-6 text-red-600" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-red-900">Harmful Effects Analyzer</h1>
+              <p className="text-sm text-red-700">
+                Identify environmental and operational impacts with AI-powered insights and remedies
+              </p>
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Input Panel */}
           <div className="lg:col-span-1">
             <Card>
@@ -554,7 +549,6 @@ export default function HarmfulEffectsAnalyzerPage() {
             )}
           </div>
         </div>
-      </div>
-    </div>
+    </ProjectLayout>
   );
 }

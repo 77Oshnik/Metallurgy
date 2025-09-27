@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/components/ui/use-toast";
+import ProjectLayout from "@/components/ProjectLayout";
 import CircularComparison from "@/components/CircularComparison";
 
 interface Project {
@@ -260,18 +261,12 @@ export default function ResultsPage() {
   const circularityIndicators = getCircularityIndicators();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <ProjectLayout>
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <header className="bg-white shadow-sm border-b rounded-lg mb-6">
+        <div className="px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link href={`/projects/${projectId}/workflow`}>
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Workflow
-                </Button>
-              </Link>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">
                   LCA Results
@@ -291,8 +286,6 @@ export default function ResultsPage() {
           </div>
         </div>
       </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Summary Cards with Enhanced Visuals */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="relative overflow-hidden">
@@ -1806,7 +1799,6 @@ export default function ResultsPage() {
             </Card>
           </div>
         </div>
-      </div>
-    </div>
+    </ProjectLayout>
   );
 }
