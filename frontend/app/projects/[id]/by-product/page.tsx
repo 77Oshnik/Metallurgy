@@ -40,6 +40,7 @@ import ProjectLayout from '@/components/ProjectLayout';
 import ByproductCard from './components/ByproductCard';
 import ScenarioDetailModal from './components/ScenarioDetailModal';
 import AnalysisConstraintsForm from './components/AnalysisConstraintsForm';
+import DiagnosticsPanel from '@/components/ui/diagnostics-panel';
 
 interface LoadingState {
   availableByproducts: boolean;
@@ -76,6 +77,8 @@ export default function ByproductValorizationPage() {
     scenarios: null,
     analysis: null
   });
+  
+  const [showDiagnostics, setShowDiagnostics] = useState(false);
 
   // Load initial data
   useEffect(() => {
@@ -290,6 +293,19 @@ export default function ByproductValorizationPage() {
             <RefreshCw className={`h-4 w-4 mr-2 ${loading.availableByproducts || loading.scenarios ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
+          
+          {/* Diagnostics Button - Show when there are errors */}
+          {(errors.availableByproducts || errors.scenarios) && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowDiagnostics(true)}
+              className="w-full sm:w-auto border-orange-200 text-orange-700 hover:bg-orange-50 dark:border-orange-800 dark:text-orange-400 dark:hover:bg-orange-900/20"
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              Troubleshoot
+            </Button>
+          )}
           
           <Dialog open={showConstraintsForm} onOpenChange={setShowConstraintsForm}>
             <DialogTrigger asChild>
@@ -540,6 +556,19 @@ export default function ByproductValorizationPage() {
           onUpdate={loadScenarios}
         />
       )}
+      
+      {/* Diagnostics Modal */}
+      <Dialog open={showDiagnostics} onOpenChange={setShowDiagnostics}>
+        <DialogContent className="max-w-[95vw] sm:max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>System Diagnostics</DialogTitle>
+          </DialogHeader>
+          <DiagnosticsPanel
+            projectId={projectId}
+            onClose={() => setShowDiagnostics(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

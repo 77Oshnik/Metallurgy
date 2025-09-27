@@ -197,6 +197,7 @@ const analyzeByproductValorization = async (req, res) => {
 const getProjectValorizationScenarios = async (req, res) => {
   try {
     const { ProjectIdentifier } = req.params;
+    console.log('getProjectValorizationScenarios called for project:', ProjectIdentifier);
     
     // Validate ProjectIdentifier
     if (!mongoose.Types.ObjectId.isValid(ProjectIdentifier)) {
@@ -367,21 +368,27 @@ const deleteValorizationScenario = async (req, res) => {
 const getAvailableByproducts = async (req, res) => {
   try {
     const { ProjectIdentifier } = req.params;
+    console.log('getAvailableByproducts called for project:', ProjectIdentifier);
     
     // Validate ProjectIdentifier
     if (!mongoose.Types.ObjectId.isValid(ProjectIdentifier)) {
+      console.log('Invalid Project Identifier:', ProjectIdentifier);
       return res.status(400).json({ error: 'Invalid Project Identifier' });
     }
     
     // Validate project exists
     const project = await Project.findById(ProjectIdentifier);
     if (!project) {
+      console.log('Project not found:', ProjectIdentifier);
       return res.status(404).json({ error: 'Project not found' });
     }
+    console.log('Project found:', project.ProjectName);
     
     // Extract available byproducts
     const extractionService = new ByproductExtractionService();
+    console.log('Extracting byproducts for project...');
     const availableByproducts = await extractionService.extractProjectByproducts(ProjectIdentifier);
+    console.log('Found byproducts:', availableByproducts.length);
     
     // Group by stage
     const byproductsByStage = availableByproducts.reduce((acc, byproduct) => {

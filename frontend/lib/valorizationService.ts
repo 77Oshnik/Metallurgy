@@ -167,20 +167,87 @@ class ValorizationService {
   private async makeRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
     
-    const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      ...options,
+    // Enhanced logging for production debugging
+    console.log('🔗 Valorization API Request:', {
+      url,
+      method: options.method || 'GET',
+      baseUrl: this.baseUrl,
+      endpoint,
+      timestamp: new Date().toISOString()
     });
+    
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          ...options.headers,
+        },
+        ...options,
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      console.log('📡 Valorization API Response:', {
+        url,
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        headers: Object.fromEntries(response.headers.entries()),
+        timestamp: new Date().toISOString()
+      });
+
+      if (!response.ok) {
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (parseError) {
+          console.error('❌ Failed to parse error response:', parseError);
+          errorData = { 
+            error: `HTTP ${response.status}: ${response.statusText}`,
+            details: 'Failed to parse error response' 
+          };
+        }
+        
+        console.error('❌ Valorization API Error:', {
+          url,
+          status: response.status,
+          statusText: response.statusText,
+          errorData,
+          timestamp: new Date().toISOString()
+        });
+        
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      console.log('✅ Valorization API Success:', {
+        url,
+        dataKeys: Object.keys(data),
+        timestamp: new Date().toISOString()
+      });
+      
+      return data;
+    } catch (error) {
+      console.error('🚨 Valorization API Network Error:', {
+        url,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        timestamp: new Date().toISOString()
+      });
+      
+      // Check for common production issues
+      if (error instanceof Error) {
+        if (error.message.includes('ERR_BLOCKED_BY_CLIENT')) {
+          throw new Error('Request blocked by browser extension or ad blocker. Please disable ad blockers and try again.');
+        }
+        if (error.message.includes('fetch')) {
+          throw new Error('Network connection error. Please check your internet connection and try again.');
+        }
+        if (error.message.includes('CORS')) {
+          throw new Error('Cross-origin request blocked. Please contact support if this persists.');
+        }
+      }
+      
+      throw error;
     }
-
-    return response.json();
   }
 
   async getAvailableByproducts(projectId: string): Promise<AvailableByproductsResponse> {
