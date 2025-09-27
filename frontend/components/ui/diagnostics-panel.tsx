@@ -25,6 +25,12 @@ interface DiagnosticResult {
   timestamp: string;
 }
 
+interface Window {
+  chrome?: {
+    runtime?: unknown;
+  };
+}
+
 interface DiagnosticsPanelProps {
   projectId: string;
   onClose?: () => void;
@@ -153,10 +159,11 @@ export default function DiagnosticsPanel({ projectId, onClose }: DiagnosticsPane
 
     // Test 4: Browser Environment
     const userAgent = navigator.userAgent;
-    const isAdBlockerLikely = !window.navigator.webdriver && 
-                             typeof window.chrome !== 'undefined' && 
-                             typeof window.chrome.runtime !== 'undefined';
-    
+    const isAdBlockerLikely = 
+  !window.navigator.webdriver &&
+  typeof (window as any).chrome !== 'undefined' &&
+  typeof (window as any).chrome.runtime !== 'undefined';
+
     results.push({
       name: 'Browser Environment',
       status: isAdBlockerLikely ? 'warning' : 'success',
