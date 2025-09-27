@@ -20,4 +20,10 @@ router.get('/:ProjectIdentifier', controller.listScenarios);
  */
 router.get('/:ProjectIdentifier/:ScenarioId', controller.getScenario);
 
+/**
+ * DELETE /api/whatif/:ProjectIdentifier/:ScenarioId
+ * delete scenario
+ */
+router.delete('/:ProjectIdentifier/:ScenarioId', controller.deleteScenario);
+
 module.exports = router;

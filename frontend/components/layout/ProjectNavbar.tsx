@@ -12,7 +12,8 @@ import {
   Sparkles,
   ArrowLeft,
   Menu,
-  X
+  X,
+  FlaskConical
 } from 'lucide-react';
 
 export default function ProjectNavbar() {
@@ -46,6 +47,11 @@ export default function ProjectNavbar() {
       name: 'Circular Comparison',
       href: `/projects/${projectId}/circular-comparison`,
       icon: Recycle
+    },
+    {
+      name: 'What-If Analysis',
+      href: `/projects/${projectId}/what-if`,
+      icon: FlaskConical
     }
   ];
 

@@ -68,7 +68,7 @@ const STAGE_FIELDS: Record<string, string[]> = {
 
 type Result = any;
 
-export default function WhatIfForm({ projectId }: { projectId: string }) {
+export default function WhatIfForm({ projectId, onScenarioCreated }: { projectId: string; onScenarioCreated?: () => void }) {
   const [scenarioName, setScenarioName] = useState('');
   const [stage, setStage] = useState(STAGES[0]);
   const [inputs, setInputs] = useState<Record<string, any>>({});
@@ -135,12 +135,22 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
           const saved = await fetchScenarioDetail(json.scenarioId);
           if (saved) {
             setResult(saved);
+            // Call the callback to refresh previous scenarios
+            if (onScenarioCreated) {
+              onScenarioCreated();
+            }
           } else {
             // fallback to returned response if fetch failed
             setResult(json);
+            if (onScenarioCreated) {
+              onScenarioCreated();
+            }
           }
         } else {
           setResult(json);
+          if (onScenarioCreated) {
+            onScenarioCreated();
+          }
         }
       }
     } catch (err: any) {
@@ -151,26 +161,15 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
   }
 
   return (
-    <div className="relative rounded-2xl p-8 overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100 border border-slate-200/50 shadow-xl">
+    <div className="relative rounded-2xl p-8 overflow-hidden  border border-green-200/50 shadow-xl">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-200/20 to-transparent rounded-full blur-3xl -translate-x-48 -translate-y-48 animate-pulse" />
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-tl from-purple-200/15 to-transparent rounded-full blur-2xl translate-x-40 translate-y-40 animate-pulse" style={{animationDelay: '1s'}} />
+        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-green-200/20 to-transparent rounded-full blur-3xl -translate-x-48 -translate-y-48 animate-pulse" />
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-tl from-green-200/15 to-transparent rounded-full blur-2xl translate-x-40 translate-y-40 animate-pulse" style={{animationDelay: '1s'}} />
         <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-gradient-to-r from-green-200/10 to-transparent rounded-full blur-2xl -translate-x-36 -translate-y-36 animate-pulse" style={{animationDelay: '2s'}} />
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
-        {/* Header Section */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">What-If Scenario Analysis</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">Create and test different scenarios to understand the impact of parameter changes on your metallurgical processes.</p>
-        </div>
-
         {/* Configuration Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
@@ -185,13 +184,13 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
               value={scenarioName}
               onChange={e => setScenarioName(e.target.value)}
               placeholder="e.g., Increase Recycled Content to 60%"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400 transition-all duration-300 placeholder-gray-400"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-400 transition-all duration-300 placeholder-gray-400"
             />
           </div>
 
           <div className="space-y-2">
             <label htmlFor="stage" className="text-sm font-semibold text-gray-700 flex items-center">
-              <svg className="w-4 h-4 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
               </svg>
               Metallurgy Stage
@@ -200,7 +199,7 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
               id="stage"
               value={stage}
               onChange={e => setStage(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400 transition-all duration-300"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-400 transition-all duration-300"
             >
               {STAGES.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
@@ -211,7 +210,7 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
         <Card className="bg-white/60 backdrop-blur-md border border-white/20 shadow-xl shadow-gray-200/50">
           <CardHeader className="pb-6">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-500 rounded-xl flex items-center justify-center mr-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mr-4">
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
@@ -244,7 +243,7 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
           <Button
             type="submit"
             disabled={loading}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
+            className="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
           >
             {loading ? (
               <>
@@ -276,9 +275,9 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
             Reset
           </Button>
 
-          <div className="ml-auto text-sm bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-lg border border-blue-200">
+          <div className="ml-auto text-sm bg-gradient-to-r from-green-50 to-emerald-50 px-4 py-2 rounded-lg border border-green-200">
             <span className="font-semibold text-gray-700">Project:</span> 
-            <span className="text-blue-600 font-mono ml-2">{projectId}</span>
+            <span className="text-green-600 font-mono ml-2">{projectId}</span>
           </div>
         </div>
 
@@ -297,17 +296,17 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
 
         {result && (
           <div className="space-y-6 pt-4">
-            <Card className="bg-gradient-to-tl from-slate-900/70 to-slate-800/60 border border-slate-700 shadow-xl shadow-black/30 backdrop-blur-md">
+            <Card className="bg-gradient-to-tl from-slate-50 to-gray-100 border border-green-300 shadow-xl shadow-green-200/20 backdrop-blur-md">
               <CardHeader>
-                <CardTitle className="text-xl font-semibold text-white">Simulation Result</CardTitle>
-                <CardDescription className="text-white/70">Scenario: "{result.scenarioName}"</CardDescription>
+                <CardTitle className="text-xl font-semibold text-gray-900">Simulation Result</CardTitle>
+                <CardDescription className="text-gray-600">Scenario: "{result.scenarioName}"</CardDescription>
               </CardHeader>
 
               <CardContent>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Inputs Panel */}
-                  <div className="bg-slate-900/80 rounded-lg p-4 border border-slate-700 shadow-inner shadow-black/40 text-white">
-                    <h3 className="text-lg font-semibold mb-4 text-white">Final Inputs</h3>
+                  <div className="bg-white border border-green-200 rounded-lg p-4 shadow-sm">
+                    <h3 className="text-lg font-semibold mb-4 text-gray-900">Final Inputs</h3>
                     <div className="space-y-4 text-sm">
                       {result.inputs && (() => {
                         // Only show inputs that have a non-empty value (avoid printing many empty fields)
@@ -320,16 +319,16 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
                           });
 
                         if (!entries.length) {
-                          return <div className="text-slate-300">No inputs provided or predicted for this stage.</div>;
+                          return <div className="text-gray-500">No inputs provided or predicted for this stage.</div>;
                         }
 
                         return entries.map(({ key, value, prov, conf }) => (
-                          <div key={key} className="bg-gray-50/70 rounded-xl p-4 border border-gray-200/30">
+                          <div key={key} className="bg-green-50/50 rounded-xl p-4 border border-green-200">
                             <div className="flex items-baseline justify-between mb-3">
                               <div className="font-semibold text-gray-800">
                                 {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
                               </div>
-                              <div className="text-lg font-mono text-blue-600 font-bold">
+                              <div className="text-lg font-mono text-green-600 font-bold">
                                 {typeof value === 'number' ? value.toLocaleString(undefined, { maximumFractionDigits: 3 }) : String(value)}
                               </div>
                             </div>
@@ -338,7 +337,7 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
                                 <span className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full ${
                                   prov === 'user' 
                                     ? 'bg-green-100 text-green-800 border border-green-200' 
-                                    : 'bg-blue-100 text-blue-800 border border-blue-200'
+                                    : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                                 }`}>
                                   {prov === 'user' ? (
                                     <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -363,7 +362,7 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
                                     style={{ width: `${Math.max(0, Math.min(100, conf))}%` }}
                                   />
                                 </div>
-                                <div className="text-xs font-semibold text-gray-600 w-12 text-right">
+                                <div className="text-xs font-semibold text-gray-700 w-12 text-right">
                                   {Math.round(conf)}%
                                 </div>
                               </div>
@@ -375,9 +374,9 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
                   </div>
  
                   {/* Enhanced Key Outputs Panel */}
-                  <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 shadow-lg">
+                  <div className="bg-white border border-green-200 rounded-2xl p-6 shadow-sm">
                     <div className="flex items-center mb-6">
-                      <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-lg flex items-center justify-center mr-3">
+                      <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center mr-3">
                         <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                         </svg>
@@ -399,16 +398,16 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
                         if (!numericEntries.length) {
                           const simple = Object.entries(outputs).filter(([_, v]) => typeof v !== 'object');
                           if (!simple.length) return (
-                            <div className="text-center py-8 text-gray-500">
-                              <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="text-center py-8 text-gray-600">
+                              <svg className="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                               </svg>
                               No numeric outputs available.
                             </div>
                           );
                           return simple.slice(0, MAX_SHOW).map(([k, v]) => (
-                            <div key={k} className="bg-gray-50/70 rounded-xl p-4 flex justify-between items-center border border-gray-200/30">
-                              <span className="font-medium text-gray-700">{k.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</span>
+                            <div key={k} className="bg-green-50/30 rounded-xl p-4 flex justify-between items-center border border-green-200">
+                              <span className="font-medium text-gray-800">{k.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</span>
                               <span className="font-mono text-base font-bold text-green-600">{String(v)}</span>
                             </div>
                           ));
@@ -417,8 +416,8 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
                         return (
                           <>
                             {shown.map(({ key, value }) => (
-                              <div key={key} className="bg-gray-50/70 rounded-xl p-4 flex justify-between items-center border border-gray-200/30 transition-all duration-200 hover:bg-gray-100/70">
-                                <span className="font-medium text-gray-700">
+                              <div key={key} className="bg-green-50/30 rounded-xl p-4 flex justify-between items-center border border-green-200 transition-all duration-200 hover:bg-green-50/50">
+                                <span className="font-medium text-gray-800">
                                   {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).replace('Per Functional Unit', '')}
                                 </span>
                                 <span className="font-mono text-base font-bold text-green-600">
@@ -428,7 +427,7 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
                             ))}
                             {hiddenCount > 0 && (
                               <div className="text-center py-2">
-                                <span className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                                <span className="text-xs text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
                                   + {hiddenCount} more results hidden
                                 </span>
                               </div>

@@ -229,4 +229,35 @@ async function getScenario(req, res) {
 	return res.json(Object.assign({}, scenario, { probabilityDistributions: prob }));
 }
 
-module.exports = { createScenario, listScenarios, getScenario };
+async function deleteScenario(req, res) {
+	const { ProjectIdentifier, ScenarioId } = req.params;
+	console.log('Delete scenario request:', { ProjectIdentifier, ScenarioId });
+	
+	if (!ProjectIdentifier || !ScenarioId) {
+		console.log('Missing required parameters');
+		return res.status(400).json({ error: 'ProjectIdentifier and ScenarioId required' });
+	}
+	
+	try {
+		console.log('Attempting to find and delete scenario...');
+		const result = await WhatIfScenario.findOneAndDelete({ 
+			_id: ScenarioId, 
+			projectIdentifier: ProjectIdentifier 
+		});
+		
+		console.log('Delete result:', result ? 'Found and deleted' : 'Not found');
+		
+		if (!result) {
+			console.log('Scenario not found for deletion');
+			return res.status(404).json({ error: 'Scenario not found' });
+		}
+		
+		console.log('Scenario deleted successfully');
+		return res.json({ message: 'Scenario deleted successfully' });
+	} catch (err) {
+		console.error('Error deleting scenario:', err);
+		return res.status(500).json({ error: 'Failed to delete scenario', details: err.message });
+	}
+}
+
+module.exports = { createScenario, listScenarios, getScenario, deleteScenario };
