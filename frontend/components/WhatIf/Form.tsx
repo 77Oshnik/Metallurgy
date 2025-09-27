@@ -151,80 +151,149 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
   }
 
   return (
-    // Outer container styled to match the Projects page theme (soft bluish/purple gradients)
-    <div className="relative rounded-xl p-6 overflow-hidden bg-gradient-to-r from-slate-800/30 via-indigo-700/20 to-slate-700/20">
-      {/* Ambient blob left/top — bluish, soft and blurred (Projects-like) */}
-      <div className="absolute -left-32 -top-24 w-72 h-72 bg-gradient-to-tr from-blue-400/12 to-purple-500/8 rounded-full blur-3xl opacity-55 pointer-events-none" />
-      {/* Ambient blob right/bottom — warm purple accent */}
-      <div className="absolute -right-36 -bottom-20 w-72 h-72 bg-gradient-to-tr from-pink-400/10 to-indigo-600/10 rounded-full blur-2xl opacity-40 pointer-events-none" />
+    <div className="relative rounded-2xl p-8 overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100 border border-slate-200/50 shadow-xl">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-200/20 to-transparent rounded-full blur-3xl -translate-x-48 -translate-y-48 animate-pulse" />
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-tl from-purple-200/15 to-transparent rounded-full blur-2xl translate-x-40 translate-y-40 animate-pulse" style={{animationDelay: '1s'}} />
+        <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-gradient-to-r from-green-200/10 to-transparent rounded-full blur-2xl -translate-x-36 -translate-y-36 animate-pulse" style={{animationDelay: '2s'}} />
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-8 relative z-10 text-white">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-          <div className="md:col-span-2">
-            <label htmlFor="scenarioName" className="text-sm font-medium text-black/90 mb-2 block">Scenario Name</label>
+      <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">What-If Scenario Analysis</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">Create and test different scenarios to understand the impact of parameter changes on your metallurgical processes.</p>
+        </div>
+
+        {/* Configuration Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label htmlFor="scenarioName" className="text-sm font-semibold text-gray-700 flex items-center">
+              <svg className="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+              Scenario Name
+            </label>
             <input
               id="scenarioName"
               value={scenarioName}
               onChange={e => setScenarioName(e.target.value)}
               placeholder="e.g., Increase Recycled Content to 60%"
-              className="w-full rounded-md border border-slate-600 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 bg-slate-900/70 text-white placeholder-slate-400 transition-all duration-300 backdrop-blur-sm"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400 transition-all duration-300 placeholder-gray-400"
             />
           </div>
 
-          <div>
-            <label htmlFor="stage" className="text-sm font-medium text-black/90 mb-2 block">Metallurgy Stage</label>
+          <div className="space-y-2">
+            <label htmlFor="stage" className="text-sm font-semibold text-gray-700 flex items-center">
+              <svg className="w-4 h-4 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+              </svg>
+              Metallurgy Stage
+            </label>
             <select
               id="stage"
               value={stage}
               onChange={e => setStage(e.target.value)}
-              className="w-full rounded-md border border-slate-600 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-cyan-400 bg-slate-900/70 text-white transition-all duration-300 backdrop-blur-sm"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/70 backdrop-blur-sm shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-400 transition-all duration-300"
             >
               {STAGES.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
         </div>
 
-        {/* Inputs Card with metallic gradient and inner shadows */}
-        <Card className="bg-gradient-to-br from-slate-900/70 to-slate-800/60 text-white border border-slate-700 shadow-lg shadow-black/30 backdrop-blur-md">
-          <CardHeader>
-            <CardTitle className="text-xl font-semibold text-white">Inputs for {stage}</CardTitle>
-            <CardDescription className="text-white/70">Provide values to simulate. The AI will intelligently predict any missing data.</CardDescription>
+        {/* Inputs Section */}
+        <Card className="bg-white/60 backdrop-blur-md border border-white/20 shadow-xl shadow-gray-200/50">
+          <CardHeader className="pb-6">
+            <div className="flex items-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-500 rounded-xl flex items-center justify-center mr-4">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <CardTitle className="text-xl font-bold text-gray-900">Parameters for {stage}</CardTitle>
+                <CardDescription className="text-gray-600 mt-1">Enter values to simulate. AI will predict missing parameters intelligently.</CardDescription>
+              </div>
+            </div>
           </CardHeader>
-          <CardContent>
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  {(STAGE_FIELDS[stage] || []).map(key => (
-    <div key={key} className="p-4 rounded-lg text-white bg-slate-900/70 border border-slate-700 shadow-inner shadow-black/40 transition-all duration-300">
-      <Field name={key} label={key.replace(/([A-Z])/g, ' $1')} value={inputs[key] ?? ''} type="number" onChange={handleChange} />
-    </div>
-  ))}
-</div>
-</CardContent>
+          <CardContent className="pt-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {(STAGE_FIELDS[stage] || []).map(key => (
+                <div key={key} className="p-5 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100/50 border border-gray-200/50 shadow-inner transition-all duration-300 hover:shadow-md hover:border-gray-300/50">
+                  <Field 
+                    name={key} 
+                    label={key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())} 
+                    value={inputs[key] ?? ''} 
+                    type="number" 
+                    onChange={handleChange} 
+                  />
+                </div>
+              ))}
+            </div>
+          </CardContent>
         </Card>
 
-        <div className="flex items-center gap-4">
+        {/* Action Buttons */}
+        <div className="flex flex-wrap items-center gap-4 pt-4">
           <Button
             type="submit"
             disabled={loading}
-            className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold px-6 py-2 rounded-md shadow-md transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-cyan-400 disabled:bg-slate-600 disabled:saturate-50 disabled:cursor-not-allowed disabled:shadow-none"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
           >
-            {loading ? 'Running Simulation...' : 'Run Scenario'}
+            {loading ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Running Simulation...
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Run Scenario
+              </>
+            )}
           </Button>
 
           <Button
-            variant="ghost"
+            variant="outline"
             type="button"
             onClick={() => { setInputs(Object.fromEntries(Object.keys(inputs).map(k => [k, '']))); setResult(null); }}
-            className="border border-slate-600 text-red-600 px-6 py-2 rounded-md bg-transparent hover:bg-slate-800 transition-colors duration-300"
+            className="border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95"
           >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
             Reset
           </Button>
 
-          <div className="ml-auto text-sm">
-            <span className="font-medium text-blue-800/80">Project ID:</span> <span className="text-black/90 font-mono">{projectId}</span>
+          <div className="ml-auto text-sm bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-lg border border-blue-200">
+            <span className="font-semibold text-gray-700">Project:</span> 
+            <span className="text-blue-600 font-mono ml-2">{projectId}</span>
           </div>
         </div>
 
-        {error && <div className="text-sm text-red-300 bg-red-900/30 border border-red-500/40 rounded-md p-3">{error}</div>}
+        {/* Error Display */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start">
+            <svg className="w-5 h-5 text-red-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div>
+              <h4 className="font-semibold text-red-800 mb-1">Simulation Error</h4>
+              <p className="text-red-700 text-sm">{error}</p>
+            </div>
+          </div>
+        )}
 
         {result && (
           <div className="space-y-6 pt-4">
@@ -255,28 +324,48 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
                         }
 
                         return entries.map(({ key, value, prov, conf }) => (
-                          <div key={key} className="flex flex-col">
-                            <div className="flex items-baseline justify-between">
-                              <div className="font-medium text-white/90">{key.replace(/([A-Z])/g, ' $1')}</div>
-                              <div className="text-base font-mono text-cyan-300">
+                          <div key={key} className="bg-gray-50/70 rounded-xl p-4 border border-gray-200/30">
+                            <div className="flex items-baseline justify-between mb-3">
+                              <div className="font-semibold text-gray-800">
+                                {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                              </div>
+                              <div className="text-lg font-mono text-blue-600 font-bold">
                                 {typeof value === 'number' ? value.toLocaleString(undefined, { maximumFractionDigits: 3 }) : String(value)}
                               </div>
                             </div>
-                            <div className="flex items-center justify-between mt-1.5">
+                            <div className="flex items-center justify-between">
                               <div>
-                                <span className={`inline-block px-2 py-0.5 text-xs rounded-full font-medium ${prov === 'user' ? 'bg-green-500/20 text-green-300 border border-green-500/30' : 'bg-sky-500/20 text-sky-300 border border-sky-500/30'}`}>
-                                  {prov === 'user' ? 'User' : 'AI'}
+                                <span className={`inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full ${
+                                  prov === 'user' 
+                                    ? 'bg-green-100 text-green-800 border border-green-200' 
+                                    : 'bg-blue-100 text-blue-800 border border-blue-200'
+                                }`}>
+                                  {prov === 'user' ? (
+                                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                  ) : (
+                                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                    </svg>
+                                  )}
+                                  {prov === 'user' ? 'User Input' : 'AI Predicted'}
                                 </span>
                               </div>
-                              <div className="flex items-center w-1/2">
-                                <div className="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-20 bg-gray-200 h-2 rounded-full overflow-hidden">
                                   <div
-                                    className="h-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
+                                    className={`h-2 rounded-full transition-all duration-500 ${
+                                      conf >= 80 ? 'bg-gradient-to-r from-green-400 to-green-500' :
+                                      conf >= 60 ? 'bg-gradient-to-r from-yellow-400 to-orange-400' :
+                                      'bg-gradient-to-r from-red-400 to-red-500'
+                                    }`}
                                     style={{ width: `${Math.max(0, Math.min(100, conf))}%` }}
-                                    title={`${conf}% confidence`}
                                   />
                                 </div>
-                                <div className="ml-2 text-xs text-slate-300 w-10 text-right">{Math.round(conf)}%</div>
+                                <div className="text-xs font-semibold text-gray-600 w-12 text-right">
+                                  {Math.round(conf)}%
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -285,32 +374,42 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
                     </div>
                   </div>
  
-                   {/* Key Outputs Panel */}
-                  <div className="bg-slate-900/70 rounded-lg p-4 border border-slate-700 shadow-inner shadow-black/40 text-white">
-                    <h3 className="text-lg font-semibold mb-4 text-white">Key Outputs</h3>
+                  {/* Enhanced Key Outputs Panel */}
+                  <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 shadow-lg">
+                    <div className="flex items-center mb-6">
+                      <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-lg flex items-center justify-center mr-3">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-900">Key Results</h3>
+                    </div>
                     <div className="space-y-3 text-sm">
                       {(() => {
                         const outputs = result.outputs?.Outputs || result.outputs || {};
-                        // collect only simple numeric outputs (skip nested objects/arrays)
                         const numericEntries = Object.entries(outputs)
                           .filter(([_, v]) => typeof v === 'number' || (!isNaN(Number(v)) && v !== null && v !== ''))
                           .map(([k, v]) => ({ key: k, value: Number(v) }));
 
-                        // sort by absolute magnitude (largest first) to show the most impactful metrics
                         numericEntries.sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
-
                         const MAX_SHOW = 10;
                         const shown = numericEntries.slice(0, MAX_SHOW);
                         const hiddenCount = Math.max(0, numericEntries.length - shown.length);
 
                         if (!numericEntries.length) {
-                          // fallback: show a small summary of top-level non-object keys
                           const simple = Object.entries(outputs).filter(([_, v]) => typeof v !== 'object');
-                          if (!simple.length) return <div className="text-sm text-slate-300">No simple numeric outputs available.</div>;
+                          if (!simple.length) return (
+                            <div className="text-center py-8 text-gray-500">
+                              <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                              No numeric outputs available.
+                            </div>
+                          );
                           return simple.slice(0, MAX_SHOW).map(([k, v]) => (
-                            <div key={k} className="flex justify-between items-center p-2 rounded-md">
-                              <span className="text-slate-300">{k.replace(/([A-Z])/g, ' $1')}</span>
-                              <span className="font-mono text-base text-green-300">{String(v)}</span>
+                            <div key={k} className="bg-gray-50/70 rounded-xl p-4 flex justify-between items-center border border-gray-200/30">
+                              <span className="font-medium text-gray-700">{k.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</span>
+                              <span className="font-mono text-base font-bold text-green-600">{String(v)}</span>
                             </div>
                           ));
                         }
@@ -318,13 +417,21 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
                         return (
                           <>
                             {shown.map(({ key, value }) => (
-                              <div key={key} className="flex justify-between items-center p-2 rounded-md">
-                                <span className="text-slate-300">{key.replace(/([A-Z])/g, ' $1').replace('Per Functional Unit', '')}</span>
-                                <span className="font-mono text-base text-green-300">{Number.isFinite(value) ? value.toLocaleString(undefined, { maximumFractionDigits: 6 }) : String(value)}</span>
+                              <div key={key} className="bg-gray-50/70 rounded-xl p-4 flex justify-between items-center border border-gray-200/30 transition-all duration-200 hover:bg-gray-100/70">
+                                <span className="font-medium text-gray-700">
+                                  {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase()).replace('Per Functional Unit', '')}
+                                </span>
+                                <span className="font-mono text-base font-bold text-green-600">
+                                  {Number.isFinite(value) ? value.toLocaleString(undefined, { maximumFractionDigits: 6 }) : String(value)}
+                                </span>
                               </div>
                             ))}
                             {hiddenCount > 0 && (
-                              <div className="text-xs text-slate-400 mt-2">+ {hiddenCount} more numeric outputs hidden</div>
+                              <div className="text-center py-2">
+                                <span className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                                  + {hiddenCount} more results hidden
+                                </span>
+                              </div>
                             )}
                           </>
                         );
@@ -333,13 +440,25 @@ export default function WhatIfForm({ projectId }: { projectId: string }) {
                   </div>
                 </div>
 
-                {/* Warnings Section */}
+                {/* Enhanced Warnings Section */}
                 {result.warnings && result.warnings.length > 0 && (
-                  <div className="mt-6">
-                    <div className="text-base font-semibold text-amber-400">Warnings</div>
-                    <ul className="list-disc list-inside text-sm text-amber-300 mt-2 space-y-1">
-                      {result.warnings.map((w: string, i: number) => <li key={i}>{w}</li>)}
-                    </ul>
+                  <div className="mt-8 bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                    <div className="flex items-start">
+                      <svg className="w-6 h-6 text-yellow-500 mr-3 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z" />
+                      </svg>
+                      <div className="flex-1">
+                        <h4 className="font-bold text-yellow-800 mb-3 text-lg">Important Warnings</h4>
+                        <ul className="space-y-2">
+                          {result.warnings.map((w: string, i: number) => (
+                            <li key={i} className="flex items-start">
+                              <div className="w-2 h-2 bg-yellow-500 rounded-full mr-3 mt-2 flex-shrink-0" />
+                              <span className="text-yellow-800 font-medium">{w}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 )}
               </CardContent>
