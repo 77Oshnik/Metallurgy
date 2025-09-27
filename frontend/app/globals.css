@@ -300,7 +300,7 @@
   }
 }
 
-/* Chatbot Animations */
+Chatbot Animations
 @keyframes slideInFromBottom {
   0% {
     transform: translateY(100%);
