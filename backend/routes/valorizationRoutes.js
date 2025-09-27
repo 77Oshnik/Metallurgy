@@ -3,30 +3,10 @@ const router = express.Router();
 const { body, param, validationResult } = require('express-validator');
 const valorizationController = require('../controllers/valorizationController');
 
-// Request logging middleware for debugging production issues
-router.use((req, res, next) => {
-  console.log('📞 Valorization Route Request:', {
-    method: req.method,
-    path: req.path,
-    originalUrl: req.originalUrl,
-    params: req.params,
-    query: req.query,
-    headers: {
-      'content-type': req.get('content-type'),
-      'origin': req.get('origin'),
-      'user-agent': req.get('user-agent'),
-      'authorization': req.get('authorization') ? '[PRESENT]' : '[NONE]'
-    },
-    timestamp: new Date().toISOString()
-  });
-  next();
-});
-
 // Validation middleware
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log('❌ Validation errors:', errors.array());
     return res.status(400).json({
       error: 'Validation failed',
       details: errors.array()

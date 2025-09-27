@@ -161,21 +161,13 @@ class ValorizationService {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000/api';
+    // Use the same pattern as other services - no /api suffix in baseUrl
+    this.baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
   }
 
   private async makeRequest<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`;
-    
-    // Enhanced logging for production debugging
-    console.log('🔗 Valorization API Request:', {
-      url,
-      method: options.method || 'GET',
-      baseUrl: this.baseUrl,
-      endpoint,
-      timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV || 'unknown'
-    });
+    // Add /api prefix to match backend route structure
+    const url = `${this.baseUrl}/api${endpoint}`;
     
     try {
       const requestOptions = {
@@ -188,24 +180,9 @@ class ValorizationService {
         ...options,
       };
       
-      // Log request details for debugging
-      console.log('📤 Request options:', {
-        method: requestOptions.method || 'GET',
-        headers: requestOptions.headers,
-        credentials: requestOptions.credentials,
-        hasBody: !!requestOptions.body
-      });
-      
+
       const response = await fetch(url, requestOptions);
 
-      console.log('📡 Valorization API Response:', {
-        url,
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok,
-        headers: Object.fromEntries(response.headers.entries()),
-        timestamp: new Date().toISOString()
-      });
 
       if (!response.ok) {
         let errorData;
@@ -216,7 +193,7 @@ class ValorizationService {
             errorData = await response.json();
           } else {
             const textResponse = await response.text();
-            console.log('📄 Non-JSON error response:', textResponse.substring(0, 200));
+            // console.log('📄 Non-JSON error response:', textResponse.substring(0, 200));
             
             // Check if it's an HTML error page (common in production)
             if (textResponse.includes('<!DOCTYPE') || textResponse.includes('<html')) {
@@ -233,7 +210,7 @@ class ValorizationService {
             }
           }
         } catch (parseError) {
-          console.error('❌ Failed to parse error response:', parseError);
+          // console.error('❌ Failed to parse error response:', parseError);
           errorData = { 
             error: `HTTP ${response.status}: ${response.statusText}`,
             details: 'Failed to parse error response',
@@ -241,34 +218,16 @@ class ValorizationService {
           };
         }
         
-        console.error('❌ Valorization API Error:', {
-          url,
-          status: response.status,
-          statusText: response.statusText,
-          errorData,
-          timestamp: new Date().toISOString()
-        });
-        
+    
         throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
-      console.log('✅ Valorization API Success:', {
-        url,
-        dataKeys: Object.keys(data),
-        timestamp: new Date().toISOString()
-      });
+    
       
       return data;
     } catch (error) {
-      console.error('🚨 Valorization API Network Error:', {
-        url,
-        error: error instanceof Error ? error.message : 'Unknown error',
-        stack: error instanceof Error ? error.stack : undefined,
-        timestamp: new Date().toISOString()
-      });
       
-      // Check for common production issues
       if (error instanceof Error) {
         if (error.message.includes('ERR_BLOCKED_BY_CLIENT')) {
           throw new Error('Request blocked by browser extension or ad blocker. Please disable ad blockers and try again.');
