@@ -49,7 +49,7 @@ app.post("/api/sms", (req, res) => {
   res.json({
     success: true,
     message: "SMS received successfully",
-    userId,
+    // userId,
     receivedData: smsData
   });
 });
