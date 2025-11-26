@@ -37,6 +37,23 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+app.post("/api/sms", (req, res) => {
+  // const userId = req.params.userId;
+  const smsData = req.body; // body contains SMS forwarded data
+
+  console.log("📩 New SMS Received!");
+  // console.log("User ID:", userId);
+  console.log("SMS Data:", smsData);
+  console.log("----------------------------");
+
+  res.json({
+    success: true,
+    message: "SMS received successfully",
+    userId,
+    receivedData: smsData
+  });
+});
+
 // Define Routes
 app.use("/api/projects", require("./routes/projectRoutes"));
 app.use("/api/mining", require("./routes/miningRoutes"));
